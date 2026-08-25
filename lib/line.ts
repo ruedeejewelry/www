@@ -7,8 +7,8 @@ import { SITE } from "@/lib/site";
  */
 
 function oaMessageUrl(text: string): string {
-  const id = SITE.lineId.startsWith("@") ? SITE.lineId : `@${SITE.lineId}`;
-  return `https://line.me/R/oaMessage/${encodeURIComponent(id)}/?${encodeURIComponent(text)}`;
+  // SITE.lineId is normalised in lib/site.ts and always carries its "@".
+  return `https://line.me/R/oaMessage/${encodeURIComponent(SITE.lineId)}/?${encodeURIComponent(text)}`;
 }
 
 export const lineMessages = {

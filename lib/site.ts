@@ -1,12 +1,45 @@
 /** Values that appear in more than one page and must never drift between them. */
 
+export const DEFAULT_SITE_URL = "https://ruedeejewelry.com";
+export const DEFAULT_LINE_OA_ID = "@ruedeejewelry";
+
+/**
+ * A dashboard field left blank hands us "", not undefined, so `??` is not
+ * enough — an empty string sails past it and blows up in `new URL()` at module
+ * load, which fails the whole build with a cryptic error. Anything unusable
+ * falls back instead, loudly in the log but without stopping a deploy.
+ */
+export function resolveSiteUrl(raw: string | undefined): string {
+  const trimmed = raw?.trim();
+  if (!trimmed) return DEFAULT_SITE_URL;
+
+  // Vercel shows hosts without a scheme; accept that spelling too.
+  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    return new URL(candidate).origin;
+  } catch {
+    console.warn(
+      `NEXT_PUBLIC_SITE_URL is not a usable URL (${trimmed}); using ${DEFAULT_SITE_URL}`,
+    );
+    return DEFAULT_SITE_URL;
+  }
+}
+
+/** Basic id of the shop's LINE OA, always with its leading "@". */
+export function resolveLineOaId(raw: string | undefined): string {
+  const trimmed = raw?.trim();
+  if (!trimmed) return DEFAULT_LINE_OA_ID;
+  return trimmed.startsWith("@") ? trimmed : `@${trimmed}`;
+}
+
 export const SITE = {
   name: "Ruedee Jewelry",
   nameTh: "ฤดี จิวเวลรี่",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ruedeejewelry.com",
+  url: resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
   phone: "095-949-5564",
   /** LINE OA basic id, e.g. "@ruedee". Prefill text is appended per product. */
-  lineId: process.env.NEXT_PUBLIC_LINE_OA_ID ?? "@ruedeejewelry",
+  lineId: resolveLineOaId(process.env.NEXT_PUBLIC_LINE_OA_ID),
   locality: "จันทบุรี",
   region: "จันทบุรี",
   country: "TH",

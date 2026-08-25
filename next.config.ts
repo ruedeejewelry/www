@@ -5,9 +5,20 @@ import type { NextConfig } from "next";
   has to be told it is allowed to fetch from there. AVIF first, WebP as the
   fallback (CLAUDE-storefront.md §7).
 */
-const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
-  : null;
+function supabaseHostname(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!raw) return null;
+  try {
+    return new URL(raw).hostname;
+  } catch {
+    // A blank or malformed dashboard value must not fail the build; images
+    // simply will not be optimised until it is corrected.
+    console.warn(`NEXT_PUBLIC_SUPABASE_URL is not a usable URL (${raw})`);
+    return null;
+  }
+}
+
+const supabaseHost = supabaseHostname();
 
 const nextConfig: NextConfig = {
   images: {
