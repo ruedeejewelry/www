@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { ReorderCard } from "@/components/storefront/ReorderCard";
 import { getProducts } from "@/lib/data/products";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "ผลงานที่ทำมา — งานที่ขายไปแล้ว สั่งทำแบบเดียวกันได้",

@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Catalog } from "@/components/storefront/Catalog";
 import { getAllSeries, getProducts, getSeries } from "@/lib/data/products";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 /*
   A series is a layer over the catalogue, not a separate set of data (§3): the

@@ -5,9 +5,10 @@ import { getArticles, getReviews } from "@/lib/data/articles";
 import { FOOTER_LINKS, HOME_STORY } from "@/lib/data/content";
 import { getAllSeries, getProducts } from "@/lib/data/products";
 import { SITE, TYPES } from "@/lib/site";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-/** Rebuilt hourly, and immediately when staff publish (see admin actions). */
-export const revalidate = 3600;
+/** Rebuilt on a short cycle, and immediately when staff publish. */
+export const revalidate = REVALIDATE_SECONDS;
 
 export default async function HomePage() {
   const [products, articles, reviews, series] = await Promise.all([

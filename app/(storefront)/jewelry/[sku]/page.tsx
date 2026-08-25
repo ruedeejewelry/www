@@ -13,8 +13,9 @@ import { getProduct, getProducts, relatedTo } from "@/lib/data/products";
 import { baht, formatGold, productAlt, productTitle } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import type { Product } from "@/types/db";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export async function generateStaticParams() {
   const products = await getProducts();

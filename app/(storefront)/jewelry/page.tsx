@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Catalog } from "@/components/storefront/Catalog";
 import { getProducts } from "@/lib/data/products";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "เครื่องประดับทั้งหมด — แหวน ต่างหู สร้อย เข็มกลัด จี้",

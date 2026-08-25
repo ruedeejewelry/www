@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllSeries, getProducts } from "@/lib/data/products";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "ซีรี่ย์ — งานชุดที่ทำต่อเนื่องกันเป็นตอน",

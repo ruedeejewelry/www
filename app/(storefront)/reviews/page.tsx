@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Media } from "@/components/ui/Media";
 import { getReviews } from "@/lib/data/articles";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "รีวิวจากลูกค้า — พร้อมรหัสสินค้าที่ซื้อจริง",

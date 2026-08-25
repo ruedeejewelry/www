@@ -6,8 +6,9 @@ import { Media } from "@/components/ui/Media";
 import { getArticle, getArticles } from "@/lib/data/articles";
 import { getProducts } from "@/lib/data/products";
 import { SITE } from "@/lib/site";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 export async function generateStaticParams() {
   const articles = await getArticles();

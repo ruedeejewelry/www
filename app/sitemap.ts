@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 import { getArticles } from "@/lib/data/articles";
 import { getAllSeries, getProducts } from "@/lib/data/products";
 import { SITE } from "@/lib/site";
+import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = 3600;
+export const revalidate = REVALIDATE_SECONDS;
 
 const STATIC_PATHS = [
   "/",
