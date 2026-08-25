@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/*
+  Palette lifted verbatim from the Claude Design prototype
+  (design/project/Ruedee Storefront.dc.html). Do not "improve" these
+  values — the prototype is the spec.
+*/
+@theme {
+  --color-paper: #faf8f4;
+  --color-panel: #f2ede4;
+  --color-card: #ffffff;
+  --color-ink: #241f1a;
+  --color-body: #5f584f;
+  --color-body-soft: #6d655b;
+  --color-muted: #8d8375;
+  --color-faint: #a09788;
+  --color-rule: #eae4da;
+  --color-rule-soft: #f2ede4;
+  --color-border: #e6e0d6;
+  --color-border-dash: #cfc5b4;
+  --color-gold: #a8813f;
+  --color-gold-dark: #7d5f2b;
+  --color-gold-bright: #d3ab63;
+  --color-line: #06c755;
+  --color-danger: #b4402f;
+  --color-ok-bg: #e9f3ea;
+  --color-ok-border: #cfe3d2;
+  --color-ok-ink: #1f4227;
+  --color-admin-bg: #f4f2ee;
+
+  --font-sans: var(--font-plex-thai), system-ui, sans-serif;
+  --font-serif: var(--font-serif-thai), Georgia, serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+}
+
+html {
+  background: var(--color-paper);
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-gold);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-gold-dark);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/*
+  Image placeholder texture. Every unshot image in the design renders as this
+  hatch with a Thai label describing the photo that belongs there, so the shop
+  can see exactly which photos are still missing.
+*/
+.dc-placeholder {
+  background: repeating-linear-gradient(
+    135deg,
+    #ece7de 0 7px,
+    #f5f1ea 7px 14px
+  );
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.dc-toast {
+  animation: toastIn 0.18s ease-out;
+}
+
+/* Chip rows scroll horizontally without showing a bar, as in the prototype. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

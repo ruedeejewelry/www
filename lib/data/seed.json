@@ -1,0 +1,97 @@
+{
+  "_note": "Source of truth for the sample catalogue carried over from the Claude Design prototype. The app falls back to this when Supabase is not configured, and scripts/generate-seed-sql.mjs turns it into supabase/seed.sql. Bracketed Thai text marks copy the shop still has to confirm.",
+  "series": [
+    {
+      "slug": "crab",
+      "title": "Crab ซีรี่ย์แหวนปู",
+      "episode_label": "Episode 50",
+      "blurb": "งานชุดที่ทำต่อเนื่องกันเป็นตอน งานทำมือทั้งชุด"
+    }
+  ],
+  "products": [
+    {"sku":"RG60","name":"ปูกระดองทอง","category":"ring","metal_type":"ทอง 90","gold_weight_g":5.80,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตาและขา","stone_color":"แดง","cert_lab":null,"ring_size_th":50,"price":48800,"sold":false,"series_slug":"crab","series_episode":"ตอน 01 · ปูกระดองทอง","series_note":"กระดองโล่งเห็นเนื้อทอง ฝังเพาะตาและขาด้วยทับทิมเม็ดเล็ก ไม่มีพลอยใหญ่กลาง เน้นความเรียบหรูของตัวเรือน"},
+    {"sku":"RG126","name":"ปูกระดองทอง","category":"ring","metal_type":"ทอง 90","gold_weight_g":5.20,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตาและขา","stone_color":"แดง","cert_lab":null,"ring_size_th":49,"price":43100,"sold":false,"series_slug":"crab","series_episode":"ตอน 01 · ปูกระดองทอง","series_note":"กระดองโล่งเห็นเนื้อทอง ฝังเพาะตาและขาด้วยทับทิมเม็ดเล็ก ไม่มีพลอยใหญ่กลาง เน้นความเรียบหรูของตัวเรือน"},
+    {"sku":"RG125","name":"ปูกระดองทอง","category":"ring","metal_type":"ทอง 90","gold_weight_g":5.40,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตาและขา","stone_color":"แดง","cert_lab":null,"ring_size_th":51,"price":44400,"sold":false,"series_slug":"crab","series_episode":"ตอน 01 · ปูกระดองทอง","series_note":"กระดองโล่งเห็นเนื้อทอง ฝังเพาะตาและขาด้วยทับทิมเม็ดเล็ก ไม่มีพลอยใหญ่กลาง เน้นความเรียบหรูของตัวเรือน"},
+    {"sku":"RG81","name":"ปูกระดองทอง","category":"ring","metal_type":"ทอง 90","gold_weight_g":5.60,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตาและขา","stone_color":"แดง","cert_lab":null,"ring_size_th":52,"price":46000,"sold":false,"series_slug":"crab","series_episode":"ตอน 01 · ปูกระดองทอง","series_note":"กระดองโล่งเห็นเนื้อทอง ฝังเพาะตาและขาด้วยทับทิมเม็ดเล็ก ไม่มีพลอยใหญ่กลาง เน้นความเรียบหรูของตัวเรือน"},
+    {"sku":"RG56","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":6.20,"stone_type":"ruby","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"แดง","cert_lab":null,"ring_size_th":56,"price":54300,"sold":false,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG121","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":5.90,"stone_type":"ruby","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"แดง","cert_lab":null,"ring_size_th":55,"price":60900,"sold":false,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG59","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":7.50,"stone_type":"star","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"เทาเงิน","cert_lab":null,"ring_size_th":56,"price":64600,"sold":true,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG57","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":7.10,"stone_type":"ruby","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"แดง","cert_lab":null,"ring_size_th":56,"price":61200,"sold":false,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG123","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":6.50,"stone_type":"star","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"เทาเงิน","cert_lab":null,"ring_size_th":56,"price":57000,"sold":true,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG83","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":6.40,"stone_type":"ruby","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"แดง","cert_lab":null,"ring_size_th":56,"price":55800,"sold":false,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG82","name":"ปูกระดองพลอย","category":"ring","metal_type":"ทอง 90","gold_weight_g":6.10,"stone_type":"ruby","stone_carat_note":"เม็ดใหญ่กลางกระดอง","stone_color":"แดง","cert_lab":null,"ring_size_th":55,"price":52900,"sold":false,"series_slug":"crab","series_episode":"ตอน 02 · ปูกระดองพลอย","series_note":"ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก"},
+    {"sku":"RG61","name":"แหวนปลา","category":"ring","metal_type":"ทอง 90","gold_weight_g":6.30,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตา","stone_color":"แดง","cert_lab":null,"ring_size_th":52,"price":51300,"sold":false,"series_slug":"crab","series_episode":"ตอน 03 · แหวนปลา","series_note":"แหวนรูปปลาทองรังสรรค์ด้วยมือ ตาฝังทับทิมเล็ก"},
+    {"sku":"ER18","name":"ต่างหูเพชรหยดน้ำ","category":"earring","metal_type":"ทอง 90","gold_weight_g":2.60,"stone_type":"diamond","stone_carat":1.10,"stone_carat_note":"1.10 กะรัต รวม","stone_color":"น้ำขาว D–F · VS","cert_lab":"GIA","ring_size_th":null,"price":52000,"sold":false,"series_slug":null,"series_episode":null,"series_note":null},
+    {"sku":"BR07","name":"สร้อยข้อมือทับทิม","category":"bracelet","metal_type":"ทอง 90","gold_weight_g":8.20,"stone_type":"ruby","stone_carat":5.40,"stone_carat_note":"5.40 กะรัต รวม","stone_color":"แดงสด","cert_lab":null,"ring_size_th":null,"price":39000,"sold":false,"series_slug":null,"series_episode":null,"series_note":null},
+    {"sku":"BC05","name":"เข็มกลัดปูทอง","category":"brooch","metal_type":"ทอง 90","gold_weight_g":6.40,"stone_type":"ruby","stone_carat_note":"เม็ดเล็กที่ตาและขา","stone_color":"แดง","cert_lab":null,"ring_size_th":null,"price":58000,"sold":false,"series_slug":null,"series_episode":null,"series_note":null},
+    {"sku":"PD22","name":"จี้เพชรเดี่ยว","category":"pendant","metal_type":"ทองคำขาว 18K","gold_weight_g":1.90,"stone_type":"diamond","stone_carat":0.72,"stone_carat_note":"0.72 กะรัต","stone_color":"น้ำขาว D · VS1 · Excellent","cert_lab":"GIA","ring_size_th":null,"price":76000,"sold":false,"series_slug":null,"series_episode":null,"series_note":null}
+  ],
+  "reviews": [
+    {"sku":"RG60","customer_name":"ชื่อลูกค้า","body":"[ใส่รีวิวจริงจากแชทไลน์ — ขออนุญาตลูกค้าก่อนลง]"},
+    {"sku":"RG56","customer_name":"ชื่อลูกค้า","body":"[ใส่รีวิวจริง พร้อมรูปที่ลูกค้าส่งมาให้]"},
+    {"sku":"RG61","customer_name":"ชื่อลูกค้า","body":"[ใส่รีวิวจริง เลือกอันที่เล่าเรื่องงานสั่งทำได้ดี]"},
+    {"sku":"PD22","customer_name":"ชื่อลูกค้า","body":"[ใส่รีวิวจริง เน้นเรื่องใบเซอร์หรือบริการหลังการขาย]"}
+  ],
+  "articles": [
+    {
+      "slug": "burnt-sapphire",
+      "title": "ไพลินเผากับไม่เผา ต่างกันตรงไหน ราคาห่างเท่าไร",
+      "excerpt": "ทำไมร้านเดียวกันขายไพลินสองเม็ดสีใกล้กันแต่ราคาต่างสามเท่า",
+      "seo_description": "ไพลินเผากับไม่เผาต่างกันตรงไหน ราคาห่างกันเท่าไร และดูจากใบเซอร์อย่างไร อธิบายจากประสบการณ์ที่ตลาดพลอยจันทบุรี",
+      "cover_alt": "ไพลินสองเม็ดวางเทียบกัน เม็ดซ้ายผ่านการเผา เม็ดขวาไม่เผา",
+      "blocks": [
+        "พลอยเกือบทั้งหมดในตลาดผ่านการเผาเพื่อให้สีสดขึ้นและใสขึ้น ซึ่งเป็นเรื่องปกติและยอมรับกันทั่วโลก ไม่ใช่ของปลอม แต่พลอยที่สวยอยู่แล้วโดยไม่ต้องเผาหาได้ยากกว่ามาก ราคาจึงต่างกันหลายเท่าที่คุณภาพสีเท่ากัน",
+        "วิธีรู้คือดูใบเซอร์ ตรงบรรทัด treatment ถ้าเขียนว่า no indication of heating คือไม่เผา ถ้าเขียน heated หรือ H คือเผา ร้านที่ไม่ยอมบอกว่าเผาหรือไม่เผา ให้ระวัง",
+        "สำหรับคนซื้อใส่เอง ไพลินเผาสีสวยคุ้มกว่ามาก เก็บงบไปลงที่ขนาดและความใสจะได้ของที่ใส่สวยกว่าในงบเท่ากัน พลอยไม่เผาเหมาะกับคนที่ซื้อเก็บเป็นสินทรัพย์"
+      ]
+    },
+    {
+      "slug": "read-cert",
+      "title": "อ่านใบเซอร์ GIA และ HRD ให้เข้าใจในสามนาที",
+      "excerpt": "บรรทัดไหนสำคัญจริง บรรทัดไหนอ่านผ่านได้",
+      "seo_description": "อ่านใบเซอร์ GIA และ HRD ให้เป็นในสามนาที บรรทัดไหนมีผลกับราคา บรรทัดไหนอ่านผ่านได้ และตรวจเลขใบเซอร์ย้อนหลังอย่างไร",
+      "cover_alt": "ใบเซอร์ GIA ชี้จุดสำคัญสามบรรทัด",
+      "blocks": [
+        "ใบเซอร์บอกสามเรื่องหลัก คือชนิดพลอย น้ำหนัก และการปรับปรุงคุณภาพ สามบรรทัดนี้คือทั้งหมดที่มีผลกับราคา ส่วนที่เหลือเป็นข้อมูลทางเทคนิค",
+        "ใบเซอร์ไม่ได้ตีราคาให้ และไม่รับประกันว่าพลอยสวย พลอยสองเม็ดที่ใบเซอร์เหมือนกันเป๊ะอาจสวยไม่เท่ากันเลย เพราะไฟและการเจียระไนวัดเป็นตัวเลขไม่ได้",
+        "เลขใบเซอร์ตรวจย้อนหลังได้ในเว็บของสถาบัน ถ้าเลขไม่ตรงกับพลอยในมือ ให้คืนของทันที"
+      ]
+    },
+    {
+      "slug": "sapphire-color",
+      "title": "สีไพลินแบบไหนราคาสูง รอยัลบลูคืออะไร",
+      "excerpt": "ชื่อเรียกสีในวงการ กับสิ่งที่ตาเห็นจริง",
+      "seo_description": "รอยัลบลู คอร์นฟลาวเวอร์ และน้ำเงินเข้ม ต่างกันอย่างไร สีไพลินแบบไหนราคาสูงและทดสอบไฟพลอยเองได้อย่างไร",
+      "cover_alt": "ไล่เฉดสีไพลินห้าระดับจากอ่อนไปเข้ม",
+      "blocks": [
+        "รอยัลบลูคือน้ำเงินเข้มอิ่มที่ยังเห็นไฟ ไม่ทึบดำ เป็นเฉดที่ราคาสูงที่สุดของไพลิน รองมาคือคอร์นฟลาวเวอร์ที่อ่อนกว่าและสว่างกว่า",
+        "คำที่ต้องระวังคือ น้ำเงินเข้ม ซึ่งบางร้านใช้เรียกพลอยที่เข้มจนทึบ ใส่แล้วดูดำ ราคาควรต่ำกว่ารอยัลบลูอย่างมาก",
+        "วิธีทดสอบง่ายสุดคือถ่ายรูปในร่มโดยไม่เปิดแฟลช ถ้ายังเห็นน้ำเงินสดคือพลอยมีไฟจริง ถ้าออกดำคือพลอยเข้มเกิน"
+      ]
+    },
+    {
+      "slug": "gold-90-vs-18k",
+      "title": "ทอง 90 กับทอง 18K เลือกอันไหนดี",
+      "excerpt": "สีต่างกัน ความแข็งต่างกัน ราคาต่างกัน",
+      "seo_description": "ทอง 90 กับทอง 18K ต่างกันที่สี ความแข็ง และราคาขายคืน เลือกอย่างไรให้เหมาะกับการใส่จริงและการเก็บมูลค่า",
+      "cover_alt": "เรือนทอง 90 และเรือนทอง 18K วางเทียบสีกัน",
+      "blocks": [
+        "ทอง 90 คือทอง 21.6 กะรัตโดยประมาณ สีเหลืองอิ่มแบบไทย เนื้ออ่อนกว่า ขึ้นเรือนบางไม่ได้มาก แต่ตีเทิร์นได้ราคาดีกว่าเพราะเนื้อทองมากกว่า",
+        "ทอง 18K แข็งกว่า ทำเรือนละเอียดและก้ามฝังพลอยเม็ดใหญ่ได้มั่นคงกว่า สีอ่อนกว่าและมีทองคำขาวให้เลือก เหมาะกับงานล้อมเพชร",
+        "ถ้าซื้อใส่เป็นหลักเลือกตามงานที่ชอบ ถ้าซื้อเก็บมูลค่าเลือกทอง 90"
+      ]
+    },
+    {
+      "slug": "chanthaburi-market",
+      "title": "ไปตลาดพลอยจันทบุรีครั้งแรก ควรรู้อะไร",
+      "excerpt": "เปิดวันไหน ต่อราคายังไง ระวังอะไร",
+      "seo_description": "ตลาดพลอยจันทบุรีเปิดวันไหน ต่อราคาอย่างไร และควรระวังอะไรเมื่อไปซื้อพลอยครั้งแรก",
+      "cover_alt": "บรรยากาศตลาดพลอยจันทบุรีวันศุกร์ถึงอาทิตย์ ริมถนนศรีจันท์",
+      "blocks": [
+        "ตลาดคึกคักที่สุดวันศุกร์ถึงอาทิตย์ ช่วงสายถึงบ่าย พ่อค้าจากทั่วโลกมานั่งดูพลอยกันริมถนนศรีจันท์ เดินดูฟรี ไม่มีใครบังคับซื้อ",
+        "ราคาที่บอกครั้งแรกมักต่อได้ แต่ถ้าไม่รู้ราคาตลาดจริงการต่อไม่ช่วยอะไร วิธีที่ปลอดภัยกว่าคือถามหลายแผงในของแบบเดียวกันก่อนตัดสินใจ",
+        "ของที่ไม่มีใบเซอร์ราคาถูกกว่าเสมอ ถ้าซื้อเม็ดใหญ่ให้ส่งตรวจก่อนจ่ายเต็ม ร้านที่ตรงไปตรงมาจะยินดีให้ส่งตรวจ"
+      ]
+    }
+  ]
+}
