@@ -1,3 +1,4 @@
+import { cache } from "react";
 import seed from "@/lib/data/seed.json";
 import { resolveProductImages, SIGNED_URL_TTL_SECONDS } from "@/lib/data/images";
 import { createServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -76,8 +77,17 @@ function signer(
   };
 }
 
-/** All published pieces, newest first. Sold items stay in the list (§4). */
-export async function getProducts(): Promise<Product[]> {
+/**
+ * All published pieces, newest first. Sold items stay in the list (§4).
+ *
+ * Wrapped in cache() because a single product page asks for the catalogue
+ * three times over — once in generateMetadata, twice in the page itself. The
+ * database sits in Singapore and the build runs in whatever region Vercel
+ * picked, so every avoided round trip is real time.
+ */
+export const getProducts = cache(async function getProducts(): Promise<
+  Product[]
+> {
   if (!isSupabaseConfigured()) {
     return Promise.all(seed.products.map((p) => decorate(fromSeed(p), [], null)));
   }
@@ -104,7 +114,7 @@ export async function getProducts(): Promise<Product[]> {
       return decorate(rest, images ?? [], sign);
     }),
   );
-}
+});
 
 export async function getProduct(sku: string): Promise<Product | null> {
   const wanted = sku.toUpperCase();
@@ -123,7 +133,9 @@ export function relatedTo(product: Product, all: Product[]): Product[] {
     .slice(0, 4);
 }
 
-export async function getSeries(slug: string): Promise<SeriesRow | null> {
+export const getSeries = cache(async function getSeries(
+  slug: string,
+): Promise<SeriesRow | null> {
   if (!isSupabaseConfigured()) {
     const s = seed.series.find((x) => x.slug === slug);
     return s
@@ -137,9 +149,11 @@ export async function getSeries(slug: string): Promise<SeriesRow | null> {
     .eq("slug", slug)
     .maybeSingle();
   return (data as SeriesRow) ?? null;
-}
+});
 
-export async function getAllSeries(): Promise<SeriesRow[]> {
+export const getAllSeries = cache(async function getAllSeries(): Promise<
+  SeriesRow[]
+> {
   if (!isSupabaseConfigured()) {
     return seed.series.map((s) => ({
       id: s.slug,
@@ -152,4 +166,4 @@ export async function getAllSeries(): Promise<SeriesRow[]> {
   const supabase = await createServerSupabase();
   const { data } = await supabase.from("series").select("*").order("slug");
   return (data as SeriesRow[]) ?? [];
-}
+});

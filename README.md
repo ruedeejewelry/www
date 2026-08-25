@@ -65,7 +65,7 @@ design/            the original Claude Design handoff: prototype, chats, briefs
 ```
 
 Admin is served at `admin.ruedeejewelry.com` by a host rewrite in
-`middleware.ts` — one deployment, not two. The middleware only rewrites and
+`proxy.ts` — one deployment, not two. The proxy only rewrites and
 refreshes the session; **every** admin page and server action calls
 `requireStaff()` itself, because hiding a route is not a permission check.
 

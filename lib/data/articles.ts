@@ -1,3 +1,4 @@
+import { cache } from "react";
 import seed from "@/lib/data/seed.json";
 import { placeholderImage, SIGNED_URL_TTL_SECONDS } from "@/lib/data/images";
 import { readingMinutes } from "@/lib/format";
@@ -51,7 +52,10 @@ async function signOne(
   return data?.signedUrl ?? null;
 }
 
-export async function getArticles(): Promise<Article[]> {
+/** cache(): generateMetadata and the article body both ask for this. */
+export const getArticles = cache(async function getArticles(): Promise<
+  Article[]
+> {
   if (!isSupabaseConfigured()) return seed.articles.map(seedToArticle);
 
   const supabase = await createServerSupabase();
@@ -116,14 +120,15 @@ export async function getArticles(): Promise<Article[]> {
       } satisfies Article;
     }),
   );
-}
+});
 
 export async function getArticle(slug: string): Promise<Article | null> {
   const all = await getArticles();
   return all.find((a) => a.slug === slug) ?? null;
 }
 
-export async function getReviews(): Promise<Review[]> {
+/** cache(): the home page, every product page and /reviews all want these. */
+export const getReviews = cache(async function getReviews(): Promise<Review[]> {
   const decorate = (r: ReviewRow, url: string | null): Review => ({
     ...r,
     image: {
@@ -174,4 +179,4 @@ export async function getReviews(): Promise<Review[]> {
       return decorate(r, signed?.signedUrl ?? null);
     }),
   );
-}
+});

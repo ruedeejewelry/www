@@ -12,7 +12,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Access control is NOT done here — every admin page and every server action
  * calls requireStaff() itself. Hiding a route is not security (§5 "กฎเหล็ก").
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
   const url = request.nextUrl;
 
