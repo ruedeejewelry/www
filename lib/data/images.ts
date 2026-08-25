@@ -15,7 +15,8 @@ export const PRODUCT_SHOTS = [
   "ใบเซอร์",
 ] as const;
 
-type Signer = (paths: string[]) => Promise<Map<string, string>>;
+/** Looks up an already-resolved URL for a stored path. */
+export type UrlFor = (path: string) => string | null;
 
 export function placeholderImage(
   label: string,
@@ -36,16 +37,15 @@ export function placeholderImage(
  * labelled placeholder naming the shot the shop still owes, so gaps are
  * obvious on the live site instead of silently missing.
  */
-export async function resolveProductImages(
+export function resolveProductImages(
   sku: string,
   rows: ProductImageRow[],
-  sign: Signer | null,
-): Promise<ProductImage[]> {
+  urlFor: UrlFor,
+): ProductImage[] {
   const sorted = [...rows].sort((a, b) => a.sort_order - b.sort_order);
-  const urls = sign ? await sign(sorted.map((r) => r.storage_path)) : new Map();
 
   const real: ProductImage[] = sorted.map((row, i) => ({
-    url: urls.get(row.storage_path) ?? null,
+    url: urlFor(row.storage_path),
     alt: row.alt_th ?? `${sku} รูปที่ ${i + 1}`,
     placeholder: i === 0 ? `รูปหลัก ${sku}` : `รูป ${sku}`,
     width: row.width,

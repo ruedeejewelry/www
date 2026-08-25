@@ -1,6 +1,6 @@
 import { cache } from "react";
 import seed from "@/lib/data/seed.json";
-import { resolveProductImages } from "@/lib/data/images";
+import { resolveProductImages, type UrlFor } from "@/lib/data/images";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createPublicSupabase } from "@/lib/supabase/public";
 import { signPaths } from "@/lib/supabase/storage";
@@ -51,21 +51,21 @@ function fromSeed(p: SeedProduct): ProductRow {
   };
 }
 
-async function decorate(
+function decorate(
   row: ProductRow,
   images: ProductImageRow[],
-  sign: ((paths: string[]) => Promise<Map<string, string>>) | null,
-): Promise<Product> {
+  urlFor: UrlFor,
+): Product {
   return {
     ...row,
     sold: row.sold_at !== null,
     type_label: typeLabel(row.category),
     stone_label: stoneLabel(row.stone_type),
-    images: await resolveProductImages(row.sku, images, sign),
+    images: resolveProductImages(row.sku, images, urlFor),
   };
 }
 
-const signProductPhotos = (paths: string[]) => signPaths("product-photos", paths);
+const noPhotos: UrlFor = () => null;
 
 /**
  * All published pieces, newest first. Sold items stay in the list (§4).
@@ -79,7 +79,7 @@ export const getProducts = cache(async function getProducts(): Promise<
   Product[]
 > {
   if (!isSupabaseConfigured()) {
-    return Promise.all(seed.products.map((p) => decorate(fromSeed(p), [], null)));
+    return seed.products.map((p) => decorate(fromSeed(p), [], noPhotos));
   }
 
   const supabase = createPublicSupabase();
@@ -95,13 +95,25 @@ export const getProducts = cache(async function getProducts(): Promise<
     return [];
   }
 
-  return Promise.all(
-    (data ?? []).map((row) => {
-      const { product_images: images, ...rest } = row as ProductRow & {
-        product_images: ProductImageRow[];
-      };
-      return decorate(rest, images ?? [], signProductPhotos);
-    }),
+  const rows = (data ?? []).map((row) => {
+    const { product_images: images, ...rest } = row as ProductRow & {
+      product_images: ProductImageRow[];
+    };
+    return { row: rest, images: images ?? [] };
+  });
+
+  /*
+    One signing call for the whole catalogue rather than one per piece. With
+    fifty products that was fifty round trips to Singapore for what the storage
+    API will happily answer in a single request.
+  */
+  const urls = await signPaths(
+    "product-photos",
+    rows.flatMap((r) => r.images.map((i) => i.storage_path)),
+  );
+
+  return rows.map(({ row, images }) =>
+    decorate(row, images, (path) => urls.get(path) ?? null),
   );
 });
 

@@ -7,6 +7,15 @@ import { SIGNED_URL_TTL_SECONDS } from "@/lib/data/images";
 export type Bucket = "product-photos" | "certificates" | "article-images";
 
 /**
+ * A path the site serves itself rather than a private Storage object: an
+ * absolute path under public/ ("/test-photo.jpg"), or a full URL. These need no
+ * signing and are handed back unchanged.
+ */
+export function isSelfHosted(path: string): boolean {
+  return path.startsWith("/") || /^https?:\/\//i.test(path);
+}
+
+/**
  * Turns storage paths into signed URLs for a page that is about to be built.
  *
  * The buckets are private and stay private (CLAUDE.md §9), and the anon role
@@ -24,13 +33,21 @@ export async function signPaths(
   paths: string[],
 ): Promise<Map<string, string>> {
   const map = new Map<string, string>();
-  if (paths.length === 0 || !hasServiceRole()) return map;
+  if (paths.length === 0) return map;
+
+  const remote: string[] = [];
+  for (const path of paths) {
+    if (isSelfHosted(path)) map.set(path, path);
+    else remote.push(path);
+  }
+
+  if (remote.length === 0 || !hasServiceRole()) return map;
 
   try {
     const supabase = createAdminSupabase();
     const { data, error } = await supabase.storage
       .from(bucket)
-      .createSignedUrls(paths, SIGNED_URL_TTL_SECONDS);
+      .createSignedUrls([...new Set(remote)], SIGNED_URL_TTL_SECONDS);
 
     if (error) {
       console.error(`signPaths(${bucket}) failed`, error.message);

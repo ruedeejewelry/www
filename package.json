@@ -10,7 +10,8 @@
     "test": "vitest run",
     "seed:sql": "node scripts/generate-seed-sql.mjs",
     "typecheck": "tsc --noEmit",
-    "brand": "node scripts/generate-brand-assets.mjs"
+    "brand": "node scripts/generate-brand-assets.mjs",
+    "demo:sql": "node scripts/generate-demo-catalogue.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
