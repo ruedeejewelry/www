@@ -27,6 +27,7 @@ database exists. The admin app needs real credentials.
 | `npm test` | Vitest — catalogue filtering and the staff access check |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run seed:sql` | Regenerates `supabase/seed.sql` from `lib/data/seed.json` |
+| `npm run brand` | Rebuilds favicon, app icon, OG image and logos from `design/brand/ruedee-logo.png` |
 
 ## Database
 

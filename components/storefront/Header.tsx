@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useFavorites } from "@/lib/favorites";
@@ -23,11 +24,20 @@ export function Header() {
             ←
           </button>
         ) : null}
-        <Link
-          href="/"
-          className="font-serif text-[19px] tracking-[.02em] text-ink"
-        >
-          Ruedee
+        {/*
+          The monogram alone, not the full lockup: the header is 52px tall and
+          the stacked wordmark would be unreadable at that size. Fixed
+          dimensions keep the row from shifting while it loads.
+        */}
+        <Link href="/" aria-label="Ruedee Jewelry หน้าแรก" className="flex items-center">
+          <Image
+            src="/ruedee-mark.webp"
+            alt="Ruedee Jewelry"
+            width={38}
+            height={30}
+            priority
+            className="h-[30px] w-auto"
+          />
         </Link>
         <div className="flex-1" />
         <Link

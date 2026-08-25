@@ -10,7 +10,7 @@ import { Media } from "@/components/ui/Media";
 import { getReviews } from "@/lib/data/articles";
 import { PRODUCT_ASSURANCES, productFaq } from "@/lib/data/content";
 import { getProduct, getProducts, relatedTo } from "@/lib/data/products";
-import { baht, formatGold, productTitle } from "@/lib/format";
+import { baht, formatGold, productAlt, productTitle } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import type { Product } from "@/types/db";
 
@@ -34,11 +34,24 @@ export async function generateMetadata({
     product.sold ? "ขายแล้ว สั่งทำแบบเดียวกันได้" : "มีของพร้อมส่ง"
   } งานทำมือจากตลาดพลอยจันทบุรี ทักไลน์ถามเรื่องชิ้นนี้ได้เลย`;
 
+  /*
+    When an admin drops a product link into a LINE chat, the preview should be
+    the piece itself. Signed photo URLs outlive the page's revalidate window, so
+    a live one is always in the freshly built HTML; with no photo yet the shop
+    logo stands in via app/opengraph-image.png.
+  */
+  const photo = product.images.find((image) => image.url)?.url;
+
   return {
     title: productTitle(product),
     description,
     alternates: { canonical: `/jewelry/${product.sku.toLowerCase()}` },
-    openGraph: { title: productTitle(product), description, type: "website" },
+    openGraph: {
+      title: productTitle(product),
+      description,
+      type: "website",
+      ...(photo ? { images: [{ url: photo, alt: productAlt(product) }] } : {}),
+    },
   };
 }
 

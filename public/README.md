@@ -1,18 +1,26 @@
 # public/
 
-Files served as-is at the site root: `public/logo.png` is reachable at
-`/logo.png`. Anything here is public to the whole internet — product photos and
-certificate scans belong in Supabase Storage, which is private and served
-through signed URLs.
+Files served as-is at the site root: `public/ruedee-mark.webp` is reachable at
+`/ruedee-mark.webp`. Anything here is public to the whole internet — product
+photos and certificate scans belong in Supabase Storage, which is private and
+served through signed URLs.
 
-Waiting on the shop:
+## Brand assets are generated, not edited
 
-| File | What it is | Used for |
+The master is `design/brand/ruedee-logo.png` (1200×1200, transparent). Replace
+that one file and run `npm run brand` to rebuild everything below; do not edit
+the outputs by hand.
+
+| File | Size | Where it shows |
 | --- | --- | --- |
-| `logo.png` | Square lockup, mark above the wordmark | Favicon, home-screen icon, link previews in LINE |
-| `logo-wide.png` | Horizontal lockup, if one exists | Site header |
+| `public/ruedee-mark.webp` | 12 KB | Site header |
+| `public/ruedee-logo.webp` | 44 KB | Full lockup, for wherever the name needs to read |
+| `app/icon.png` | 8 KB | Browser tab |
+| `app/apple-icon.png` | 4 KB | iOS home screen — on cream, since iOS composites onto black |
+| `app/opengraph-image.png` | 72 KB | Link previews in LINE, for pages with no photo of their own |
 
-Transparent PNG or SVG please — the site sits on a cream background
-(`#faf8f4`), so a white-boxed logo shows as a white rectangle.
+Product pages override the last one with the actual piece, because a link
+dropped into a chat should preview the jewellery, not the logo.
 
-Git does not track empty directories, which is why this file exists.
+Still missing: a horizontal lockup (mark left, wordmark right). The header uses
+the monogram alone for now, since the stacked wordmark is unreadable at 52px.
