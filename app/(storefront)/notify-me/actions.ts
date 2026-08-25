@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { isSupabaseConfigured } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { notifySchema } from "@/lib/validation/schemas";
 
 export type NotifyResult = { ok: true } | { ok: false; error: string };

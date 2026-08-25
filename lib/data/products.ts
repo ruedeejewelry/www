@@ -1,15 +1,20 @@
 import { cache } from "react";
 import seed from "@/lib/data/seed.json";
-import { resolveProductImages, SIGNED_URL_TTL_SECONDS } from "@/lib/data/images";
-import { createServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
+import { resolveProductImages } from "@/lib/data/images";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createPublicSupabase } from "@/lib/supabase/public";
+import { signPaths } from "@/lib/supabase/storage";
 import { stoneLabel, typeLabel } from "@/lib/site";
 import type { Product, ProductImageRow, ProductRow, SeriesRow } from "@/types/db";
 
 /*
   Every page that shows products is static or ISR — nothing here runs in the
-  browser (CLAUDE-storefront.md §7). With no Supabase configured the site falls
-  back to the sample catalogue in seed.json so the design can be reviewed
-  before the database exists.
+  browser (CLAUDE-storefront.md §7). Reads go through the anonymous client, not
+  a session-bound one: these functions run inside generateStaticParams too,
+  where there is no request and no cookie jar to read.
+
+  With no Supabase configured the site falls back to the sample catalogue in
+  seed.json so the design can be reviewed before the database exists.
 */
 
 type SeedProduct = (typeof seed.products)[number];
@@ -60,22 +65,7 @@ async function decorate(
   };
 }
 
-function signer(
-  supabase: Awaited<ReturnType<typeof createServerSupabase>>,
-): (paths: string[]) => Promise<Map<string, string>> {
-  return async (paths) => {
-    const map = new Map<string, string>();
-    if (paths.length === 0) return map;
-    const { data, error } = await supabase.storage
-      .from("product-photos")
-      .createSignedUrls(paths, SIGNED_URL_TTL_SECONDS);
-    if (error || !data) return map;
-    for (const item of data) {
-      if (item.signedUrl && item.path) map.set(item.path, item.signedUrl);
-    }
-    return map;
-  };
-}
+const signProductPhotos = (paths: string[]) => signPaths("product-photos", paths);
 
 /**
  * All published pieces, newest first. Sold items stay in the list (§4).
@@ -92,7 +82,7 @@ export const getProducts = cache(async function getProducts(): Promise<
     return Promise.all(seed.products.map((p) => decorate(fromSeed(p), [], null)));
   }
 
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   const { data, error } = await supabase
     .from("products")
     .select("*, product_images(*)")
@@ -105,13 +95,12 @@ export const getProducts = cache(async function getProducts(): Promise<
     return [];
   }
 
-  const sign = signer(supabase);
   return Promise.all(
     (data ?? []).map((row) => {
       const { product_images: images, ...rest } = row as ProductRow & {
         product_images: ProductImageRow[];
       };
-      return decorate(rest, images ?? [], sign);
+      return decorate(rest, images ?? [], signProductPhotos);
     }),
   );
 });
@@ -142,7 +131,7 @@ export const getSeries = cache(async function getSeries(
       ? { id: s.slug, slug: s.slug, title: s.title, episode_label: s.episode_label, blurb: s.blurb }
       : null;
   }
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   const { data } = await supabase
     .from("series")
     .select("*")
@@ -163,7 +152,7 @@ export const getAllSeries = cache(async function getAllSeries(): Promise<
       blurb: s.blurb,
     }));
   }
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   const { data } = await supabase.from("series").select("*").order("slug");
   return (data as SeriesRow[]) ?? [];
 });

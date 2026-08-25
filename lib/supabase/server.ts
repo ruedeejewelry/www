@@ -1,17 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-/** True when the project has been pointed at a Supabase instance. */
-export function isSupabaseConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
-}
-
 /**
- * Server client carrying the caller's session. Reads run under that session's
- * RLS: anonymous visitors see published rows, signed-in staff see drafts too.
+ * Server client carrying the caller's session — for the admin app and for
+ * sign-in, where who is asking is the whole point.
+ *
+ * Do NOT use this for storefront data. It reads cookies, and the public pages
+ * are built by `generateStaticParams` where no request exists; use
+ * `createPublicSupabase()` there instead.
  */
 export async function createServerSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

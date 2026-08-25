@@ -1,7 +1,8 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
-import { createServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createServerSupabase } from "@/lib/supabase/server";
 import type { StaffRow } from "@/types/db";
 
 export type Staff = Pick<StaffRow, "id" | "full_name" | "role">;

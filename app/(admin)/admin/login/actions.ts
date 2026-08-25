@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createServerSupabase } from "@/lib/supabase/server";
 
 export type LoginResult = { ok: false; error: string };
 

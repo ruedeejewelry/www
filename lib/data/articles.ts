@@ -1,8 +1,10 @@
 import { cache } from "react";
 import seed from "@/lib/data/seed.json";
-import { placeholderImage, SIGNED_URL_TTL_SECONDS } from "@/lib/data/images";
+import { placeholderImage } from "@/lib/data/images";
 import { readingMinutes } from "@/lib/format";
-import { createServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createPublicSupabase } from "@/lib/supabase/public";
+import { signPath } from "@/lib/supabase/storage";
 import type {
   Article,
   ArticleBlock,
@@ -41,16 +43,8 @@ function seedToArticle(a: SeedArticle): Article {
   };
 }
 
-async function signOne(
-  supabase: Awaited<ReturnType<typeof createServerSupabase>>,
-  path: string | null,
-): Promise<string | null> {
-  if (!path) return null;
-  const { data } = await supabase.storage
-    .from("article-images")
-    .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
-  return data?.signedUrl ?? null;
-}
+const signArticleImage = (path: string | null) =>
+  signPath("article-images", path);
 
 /** cache(): generateMetadata and the article body both ask for this. */
 export const getArticles = cache(async function getArticles(): Promise<
@@ -58,7 +52,7 @@ export const getArticles = cache(async function getArticles(): Promise<
 > {
   if (!isSupabaseConfigured()) return seed.articles.map(seedToArticle);
 
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   const { data, error } = await supabase
     .from("articles")
     .select("*, article_blocks(*), article_products(products(sku))")
@@ -87,7 +81,7 @@ export const getArticles = cache(async function getArticles(): Promise<
           image:
             b.kind === "image"
               ? {
-                  url: await signOne(supabase, b.image_path),
+                  url: await signArticleImage(b.image_path),
                   alt: b.text ?? "",
                   placeholder: b.text || "รูปในเนื้อหา",
                   width: null,
@@ -100,7 +94,7 @@ export const getArticles = cache(async function getArticles(): Promise<
       const chars = blocks
         .filter((b) => b.kind === "text")
         .reduce((t, b) => t + b.text.length, 0);
-      const coverUrl = await signOne(supabase, row.cover_image_path);
+      const coverUrl = await signArticleImage(row.cover_image_path);
 
       return {
         ...row,
@@ -158,7 +152,7 @@ export const getReviews = cache(async function getReviews(): Promise<Review[]> {
     );
   }
 
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   const { data, error } = await supabase
     .from("reviews")
     .select("*")
@@ -171,12 +165,8 @@ export const getReviews = cache(async function getReviews(): Promise<Review[]> {
   }
 
   return Promise.all(
-    (data as ReviewRow[]).map(async (r) => {
-      if (!r.image_path) return decorate(r, null);
-      const { data: signed } = await supabase.storage
-        .from("product-photos")
-        .createSignedUrl(r.image_path, SIGNED_URL_TTL_SECONDS);
-      return decorate(r, signed?.signedUrl ?? null);
-    }),
+    (data as ReviewRow[]).map(async (r) =>
+      decorate(r, await signPath("product-photos", r.image_path)),
+    ),
   );
 });

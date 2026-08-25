@@ -19,8 +19,12 @@ const state = {
   error: null as { message: string } | null,
 };
 
-vi.mock("@/lib/supabase/server", () => ({
+vi.mock("@/lib/supabase/config", () => ({
   isSupabaseConfigured: () => true,
+  hasServiceRole: () => true,
+}));
+
+vi.mock("@/lib/supabase/server", () => ({
   createServerSupabase: async () => ({
     auth: { getUser: async () => ({ data: { user: state.user } }) },
     from: () => ({
