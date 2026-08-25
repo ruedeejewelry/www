@@ -17,7 +17,7 @@ export default async function GuideIndexPage() {
   const articles = await getArticles();
 
   return (
-    <div className="px-[18px] pt-5 pb-[130px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] leading-[1.5] text-ink">
         ความรู้เรื่องพลอย
       </h1>

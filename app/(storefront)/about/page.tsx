@@ -32,7 +32,7 @@ const localBusiness = {
 
 export default function AboutPage() {
   return (
-    <div className="px-[18px] pt-5 pb-[130px]">
+    <div className="px-[18px] pt-5 pb-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }}

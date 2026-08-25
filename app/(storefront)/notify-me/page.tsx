@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotifyPage() {
   return (
-    <div className="px-[18px] pt-5 pb-[140px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] leading-[1.5] text-ink">
         แจ้งเตือนของเข้าใหม่
       </h1>

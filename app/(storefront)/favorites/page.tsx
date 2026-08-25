@@ -17,7 +17,7 @@ export default async function FavoritesPage() {
   const products = await getProducts();
 
   return (
-    <div className="px-[18px] pt-5 pb-[140px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] text-ink">ชิ้นที่ถูกใจ</h1>
       <FavoritesList products={products} />
       <Link

@@ -203,7 +203,7 @@ export function Catalog({
         </div>
       ) : null}
 
-      <div className="h-[130px]" />
+      <div className="h-10" />
     </div>
   );
 }

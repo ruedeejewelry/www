@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PolicyPage() {
   return (
-    <div className="px-[18px] pt-5 pb-[130px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] leading-[1.5] text-ink">
         การจัดส่ง เปลี่ยนคืน และรับประกัน
       </h1>

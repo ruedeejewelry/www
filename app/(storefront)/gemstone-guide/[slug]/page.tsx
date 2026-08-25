@@ -59,7 +59,7 @@ export default async function ArticlePage({
   };
 
   return (
-    <article className="px-[18px] pt-5 pb-[130px]">
+    <article className="px-[18px] pt-5 pb-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

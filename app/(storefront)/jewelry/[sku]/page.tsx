@@ -253,7 +253,7 @@ export default async function ProductPage({
         </section>
       ) : null}
 
-      <div className="h-[150px]" />
+      <div className="h-10" />
     </div>
   );
 }

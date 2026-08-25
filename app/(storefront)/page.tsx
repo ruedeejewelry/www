@@ -2,9 +2,9 @@ import Link from "next/link";
 import { ProductCard } from "@/components/storefront/ProductCard";
 import { Media } from "@/components/ui/Media";
 import { getArticles, getReviews } from "@/lib/data/articles";
-import { FOOTER_LINKS, HOME_STORY } from "@/lib/data/content";
+import { HOME_STORY } from "@/lib/data/content";
 import { getAllSeries, getProducts } from "@/lib/data/products";
-import { SITE, TYPES } from "@/lib/site";
+import { TYPES } from "@/lib/site";
 
 /** Rebuilt on a short cycle, and immediately when staff publish. */
 // Next requires a literal here; tests/revalidate.test.ts keeps them equal.
@@ -176,19 +176,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <footer className="flex flex-col gap-0.5 px-[18px] pt-7 pb-[130px]">
-        <div className="mb-4 h-px bg-rule" />
-        {FOOTER_LINKS.map((l) => (
-          <Link key={l.href} href={l.href} className="py-[9px] text-[13.5px] text-body">
-            {l.label}
-          </Link>
-        ))}
-        <p className="mt-[14px] text-[11.5px] leading-[1.7] text-faint">
-          © 2025 {SITE.name} · ตลาดพลอยจันทบุรี
-          <br />
-          โทร {SITE.phone} · แชต LINE ตอบเองทุกข้อความ
-        </p>
-      </footer>
     </div>
   );
 }

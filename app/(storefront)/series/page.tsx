@@ -16,7 +16,7 @@ export default async function SeriesIndexPage() {
   const [series, products] = await Promise.all([getAllSeries(), getProducts()]);
 
   return (
-    <div className="px-[18px] pt-5 pb-[130px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] leading-[1.5] text-ink">ซีรี่ย์</h1>
       <p className="mt-[10px] text-[13.5px] leading-[1.9] text-body">
         งานชุดที่ทำต่อเนื่องกันเป็นตอน ชิ้นในซีรี่ย์อยู่ในแคตตาล็อกรวมด้วยเสมอ

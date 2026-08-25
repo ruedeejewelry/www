@@ -19,7 +19,7 @@ export default async function PortfolioPage() {
   const items = [...sold, ...products.filter((p) => !p.sold).slice(0, 4)];
 
   return (
-    <div className="pt-5 pb-[130px]">
+    <div className="pt-5 pb-10">
       <div className="px-[18px]">
         <h1 className="font-serif text-[24px] leading-[1.5] text-ink">
           ผลงานที่ทำมา

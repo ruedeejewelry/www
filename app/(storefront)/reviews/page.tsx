@@ -17,7 +17,7 @@ export default async function ReviewsPage() {
   const reviews = await getReviews();
 
   return (
-    <div className="px-[18px] pt-5 pb-[130px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] text-ink">รีวิวจากลูกค้า</h1>
       <p className="mt-2 text-[13px] text-muted">
         ทุกรีวิวมาจากลูกค้าที่ซื้อจริง ระบุรหัสสินค้าที่ซื้อไว้ทุกอัน

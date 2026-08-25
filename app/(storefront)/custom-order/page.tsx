@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function CustomOrderPage() {
   return (
-    <div className="px-[18px] pt-5 pb-[140px]">
+    <div className="px-[18px] pt-5 pb-10">
       <h1 className="font-serif text-[24px] leading-[1.5] text-ink">งานสั่งทำ</h1>
       <p className="mt-[10px] text-[13.5px] leading-[1.9] text-body">
         งานสั่งทำคืองานหลักของร้าน ส่งภาพอ้างอิงมาหรือบอกไอเดียในใจได้เลย
