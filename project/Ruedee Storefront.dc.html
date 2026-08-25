@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#1b1815; font-family:'IBM Plex Sans Thai',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#a8813f; text-decoration:none; }
+  a:hover { color:#7d5f2b; }
+  button { font-family:inherit; cursor:pointer; }
+  input, select, textarea { font-family:inherit; }
+  ::-webkit-scrollbar { width:0; height:0; }
+  @keyframes toastIn { from { opacity:0; transform:translate(-50%,8px);} to { opacity:1; transform:translate(-50%,0);} }
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;gap:40px;align-items:flex-start;justify-content:center;padding:40px 32px 64px">
+
+  <div style="width:210px;position:sticky;top:40px;color:#cfc6b8;padding-top:8px">
+    <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#f0e9dc;letter-spacing:.02em">Ruedee Jewelry</div>
+    <div style="font-size:12px;color:#8d8375;margin-top:4px;line-height:1.6">เว็บหน้าบ้าน — prototype กดได้จริง</div>
+    <div style="height:1px;background:#332e28;margin:18px 0"></div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="6">
+        <button onClick="{{ nav.go }}" style="text-align:left;background:{{ nav.bg }};color:{{ nav.fg }};border:0;border-radius:7px;padding:9px 11px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:baseline">
+          <span>{{ nav.label }}</span>
+          <span style="font-size:10.5px;font-family:ui-monospace,Menlo,monospace;color:#6f665a">{{ nav.path }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="height:1px;background:#332e28;margin:18px 0"></div>
+    <div style="font-size:11.5px;color:#7c7365;line-height:1.75">ทุกชิ้นมี URL ของตัวเอง ไม่มี modal ไม่มี flip card ราคาเห็นตั้งแต่ในกริด ปุ่มทัก LINE พ่วงรหัสสินค้าเสมอ</div>
+  </div>
+
+  <div>
+    <div style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#8d8375;margin:0 0 10px 4px">ruedeejewelry.com{{ currentPath }}</div>
+    <div style="width:390px;height:844px;background:#faf8f4;border-radius:26px;overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.5);border:1px solid #2c2721">
+
+      <div id="scroller" style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden">
+
+        <div style="position:sticky;top:0;z-index:20;background:rgba(250,248,244,.94);backdrop-filter:blur(8px);border-bottom:1px solid #eae4da">
+          <div style="height:52px;display:flex;align-items:center;gap:10px;padding:0 14px">
+            <sc-if value="{{ showBack }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ back }}" aria-label="ย้อนกลับ" style="width:36px;height:36px;border-radius:50%;border:1px solid #e6e0d6;background:#fff;color:#241f1a;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center">←</button>
+            </sc-if>
+            <button onClick="{{ goHome }}" style="border:0;background:transparent;padding:0;font-family:'Noto Serif Thai',serif;font-size:19px;color:#241f1a;letter-spacing:.02em">Ruedee</button>
+            <div style="flex:1"></div>
+            <button onClick="{{ goCatalog }}" style="border:1px solid #e6e0d6;background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;color:#3a332c">ดูสินค้าทั้งหมด</button>
+            <button onClick="{{ goWishlist }}" aria-label="ชิ้นที่ถูกใจ" style="position:relative;width:36px;height:36px;border-radius:50%;border:1px solid #e6e0d6;background:#fff;color:#a8813f;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center">♥
+              <sc-if value="{{ wishCount }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:999px;background:#241f1a;color:#f5f1ea;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px">{{ wishCount }}</span>
+              </sc-if>
+            </button>
+          </div>
+        </div>
+
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="padding:20px 18px 14px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:26px;line-height:1.45;color:#241f1a">ใส่ก็สวย<br>เก็บก็มีค่า</div>
+              <div style="font-size:13.5px;line-height:1.8;color:#6d655b;margin-top:10px">เพชร พลอย แท้ จากตลาดพลอยจันทบุรี ในราคาต้นน้ำ คุณแม่ออกแบบเอง ช่างมือดีของบ้านเป็นคนทำ</div>
+            </div>
+
+            <div style="display:flex;gap:8px;overflow-x:auto;padding:2px 18px 16px">
+              <sc-for list="{{ categoryChips }}" as="cat" hint-placeholder-count="5">
+                <button onClick="{{ cat.go }}" style="flex:0 0 auto;border:1px solid #e6e0d6;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;color:#3a332c">{{ cat.label }}</button>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:4px 18px 12px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#241f1a">เข้าใหม่ล่าสุด</div>
+              <button onClick="{{ goCatalog }}" style="border:0;background:transparent;font-size:12.5px;color:#a8813f;padding:0">ดูทั้งหมด</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;padding:0 18px">
+              <sc-for list="{{ latest }}" as="item" hint-placeholder-count="8">
+                <button onClick="{{ item.open }}" style="text-align:left;border:0;background:transparent;padding:0;display:flex;flex-direction:column;gap:7px">
+                  <div style="position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;justify-content:flex-start;padding:8px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">รูป {{ item.sku }}</span>
+                    <sc-if value="{{ item.sold }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:8px;left:8px;background:rgba(36,31,26,.82);color:#f5f1ea;font-size:10.5px;border-radius:999px;padding:3px 9px">ขายแล้ว</span>
+                    </sc-if>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8d8375;letter-spacing:.03em">{{ item.sku }}</div>
+                    <div style="font-size:13px;color:#241f1a;line-height:1.5">{{ item.name }}</div>
+                    <div style="font-size:14px;color:#241f1a;font-weight:600;margin-top:1px">{{ item.priceText }}</div>
+                    <div style="font-size:11.5px;color:#8d8375">{{ item.metaShort }}</div>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+
+            <div style="margin:28px 18px 0;padding:20px 18px;background:#f2ede4;border-radius:16px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16px;color:#241f1a;line-height:1.6">Ruedee มาจากชื่อคุณแม่ฤดี</div>
+              <div style="font-size:13px;line-height:1.85;color:#5f584f;margin-top:8px">บ้านนี้ทำอัญมณีกันมาตั้งแต่รุ่นปู่ย่า ส่งต่อกันมารุ่นต่อรุ่นจนถึงจัน จันกับคุณแม่ออกแบบเอง แล้วให้ช่างมือดีของบ้านเป็นคนทำ ช่างแบบนี้เหลือน้อยมากในยุคนี้</div>
+              <button onClick="{{ goAbout }}" style="margin-top:12px;border:1px solid #ddd4c5;background:transparent;border-radius:999px;padding:8px 15px;font-size:12.5px;color:#3a332c">อ่านเรื่องของร้าน</button>
+            </div>
+
+            <div style="padding:26px 0 0">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 18px 12px">
+                <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#241f1a">ลูกค้าใส่จริง</div>
+                <button onClick="{{ goReviews }}" style="border:0;background:transparent;font-size:12.5px;color:#a8813f;padding:0">อ่านรีวิวทั้งหมด</button>
+              </div>
+              <div style="display:flex;gap:10px;overflow-x:auto;padding:0 18px 4px">
+                <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+                  <div style="flex:0 0 auto;width:236px;background:#fff;border:1px solid #eae4da;border-radius:14px;padding:12px">
+                    <div style="aspect-ratio:4/3;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:7px">
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#8d8375">รูปลูกค้าใส่ {{ r.sku }}</span>
+                    </div>
+                    <div style="font-size:12.5px;line-height:1.8;color:#5f584f;margin-top:9px">{{ r.text }}</div>
+                    <div style="font-size:11.5px;color:#8d8375;margin-top:7px">{{ r.who }} · {{ r.sku }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="padding:26px 18px 0">
+              <button onClick="{{ goCustom }}" style="width:100%;text-align:left;border:0;border-radius:16px;padding:18px;background:#241f1a;color:#f0e9dc">
+                <div style="font-family:'Noto Serif Thai',serif;font-size:17px;line-height:1.5">อยากได้แบบที่ยังไม่มีในเว็บ</div>
+                <div style="font-size:12.5px;line-height:1.8;color:#b7ad9d;margin-top:7px">บอกงบและแบบที่ชอบ เราหาพลอยให้เลือกก่อนเริ่มงาน 2–4 สัปดาห์ได้ของ</div>
+                <div style="font-size:13px;color:#d3ab63;margin-top:11px">ดูขั้นตอนงานสั่งทำ →</div>
+              </button>
+            </div>
+
+            <div style="padding:26px 0 0">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 18px 12px">
+                <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#241f1a">ก่อนซื้อพลอย ควรรู้</div>
+                <button onClick="{{ goKnowledge }}" style="border:0;background:transparent;font-size:12.5px;color:#a8813f;padding:0">ทั้งหมด</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:0 18px">
+                <sc-for list="{{ articleTeasers }}" as="a" hint-placeholder-count="3">
+                  <button onClick="{{ a.open }}" style="text-align:left;border:0;border-bottom:1px solid #eae4da;background:transparent;padding:12px 0;display:flex;gap:12px;align-items:center">
+                    <div style="flex:1">
+                      <div style="font-size:13.5px;color:#241f1a;line-height:1.55">{{ a.title }}</div>
+                      <div style="font-size:11.5px;color:#8d8375;margin-top:3px">อ่าน {{ a.mins }} นาที</div>
+                    </div>
+                    <span style="color:#a8813f;font-size:14px">→</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="padding:26px 18px 0">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#241f1a">ซีรี่ย์</div>
+              <div style="font-size:12.5px;color:#8d8375;margin-top:4px">งานชุดที่ทำต่อเนื่องกันเป็นตอน</div>
+              <button onClick="{{ goCrab }}" style="width:100%;margin-top:12px;text-align:left;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center">
+                <div style="width:64px;height:64px;border-radius:10px;flex:0 0 auto;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px)"></div>
+                <div>
+                  <div style="font-size:14px;color:#241f1a">Crab ซีรี่ย์แหวนปู</div>
+                  <div style="font-size:12px;color:#8d8375;margin-top:3px">Episode 50 · 12 ชิ้น · งานทำมือทั้งชุด</div>
+                </div>
+              </button>
+            </div>
+
+            <div style="padding:28px 18px 130px;display:flex;flex-direction:column;gap:2px">
+              <div style="height:1px;background:#eae4da;margin-bottom:16px"></div>
+              <sc-for list="{{ footerLinks }}" as="f" hint-placeholder-count="4">
+                <button onClick="{{ f.go }}" style="text-align:left;border:0;background:transparent;padding:9px 0;font-size:13.5px;color:#5f584f">{{ f.label }}</button>
+              </sc-for>
+              <div style="font-size:11.5px;color:#a09788;line-height:1.7;margin-top:14px">© 2025 Ruedee Jewelry · ตลาดพลอยจันทบุรี<br>โทร 095-949-5564 · แชต LINE ตอบเองทุกข้อความ</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCatalog }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="padding:16px 18px 0">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:21px;color:#241f1a">{{ catalogTitle }}</div>
+              <div style="position:relative;margin-top:12px">
+                <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="ค้นด้วยรหัสสินค้า เช่น RG126" style="width:100%;height:44px;border-radius:11px;border:1px solid #e6e0d6;background:#fff;padding:0 14px;font-size:13.5px;color:#241f1a;outline:none">
+              </div>
+            </div>
+
+            <div style="position:sticky;top:52px;z-index:15;background:rgba(250,248,244,.94);backdrop-filter:blur(8px);padding:12px 0 10px;margin-top:12px;border-bottom:1px solid #eae4da">
+              <div style="display:flex;gap:7px;overflow-x:auto;padding:0 18px 8px">
+                <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="6">
+                  <button onClick="{{ c.toggle }}" style="flex:0 0 auto;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:999px;padding:7px 13px;font-size:12.5px">{{ c.label }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:7px;overflow-x:auto;padding:0 18px">
+                <sc-for list="{{ stoneChips }}" as="c" hint-placeholder-count="6">
+                  <button onClick="{{ c.toggle }}" style="flex:0 0 auto;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:999px;padding:7px 13px;font-size:12.5px">{{ c.label }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:7px;overflow-x:auto;padding:8px 18px 0">
+                <sc-for list="{{ priceChips }}" as="c" hint-placeholder-count="4">
+                  <button onClick="{{ c.toggle }}" style="flex:0 0 auto;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:999px;padding:7px 13px;font-size:12.5px">{{ c.label }}</button>
+                </sc-for>
+                <sc-for list="{{ statusChips }}" as="c" hint-placeholder-count="2">
+                  <button onClick="{{ c.toggle }}" style="flex:0 0 auto;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:999px;padding:7px 13px;font-size:12.5px">{{ c.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px 10px">
+              <div style="font-size:12.5px;color:#6d655b">{{ resultText }}</div>
+              <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ clearFilters }}" style="border:0;background:transparent;font-size:12.5px;color:#a8813f;padding:0">ล้างตัวกรอง</button>
+              </sc-if>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;padding:0 18px">
+              <sc-for list="{{ results }}" as="item" hint-placeholder-count="6">
+                <button onClick="{{ item.open }}" style="text-align:left;border:0;background:transparent;padding:0;display:flex;flex-direction:column;gap:7px">
+                  <div style="position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:8px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">รูป {{ item.sku }}</span>
+                    <sc-if value="{{ item.sold }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:8px;left:8px;background:rgba(36,31,26,.82);color:#f5f1ea;font-size:10.5px;border-radius:999px;padding:3px 9px">ขายแล้ว</span>
+                    </sc-if>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8d8375;letter-spacing:.03em">{{ item.sku }}</div>
+                    <div style="font-size:13px;color:#241f1a;line-height:1.5">{{ item.name }}</div>
+                    <div style="font-size:14px;color:#241f1a;font-weight:600;margin-top:1px">{{ item.priceText }}</div>
+                    <div style="font-size:11.5px;color:#8d8375">{{ item.metaShort }}</div>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:8px 18px;padding:26px 18px;border:1px dashed #ded6c8;border-radius:14px;text-align:center">
+                <div style="font-size:13.5px;color:#5f584f;line-height:1.8">ไม่มีชิ้นที่ตรงเงื่อนไขนี้ตอนนี้<br>ทักบอกสิ่งที่อยากได้ เราหาพลอยให้ได้</div>
+                <button onClick="{{ lineCustom }}" style="margin-top:14px;border:0;background:#06c755;color:#fff;border-radius:999px;padding:11px 20px;font-size:13.5px">ทักบอกแบบที่อยากได้</button>
+              </div>
+            </sc-if>
+
+            <div style="height:130px"></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="aspect-ratio:1/1;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:12px;position:relative">
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#8d8375">รูปหลัก {{ product.sku }} — มุมตรง ซูมได้</span>
+              <sc-if value="{{ product.sold }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:12px;left:12px;background:rgba(36,31,26,.82);color:#f5f1ea;font-size:11.5px;border-radius:999px;padding:4px 11px">ขายแล้ว</span>
+              </sc-if>
+            </div>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding:10px 14px 0">
+              <sc-for list="{{ product.shots }}" as="s" hint-placeholder-count="4">
+                <div style="flex:0 0 auto;width:68px;height:68px;border-radius:9px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:8.5px;color:#8d8375;line-height:1.3">{{ s }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="padding:18px 18px 0">
+              <div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#8d8375;letter-spacing:.04em">{{ product.sku }}</div>
+              <h1 style="font-family:'Noto Serif Thai',serif;font-size:21px;line-height:1.5;color:#241f1a;margin:6px 0 0;font-weight:500">{{ product.name }}</h1>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:10px">
+                <div>
+                  <div style="font-size:23px;color:#241f1a;font-weight:600">{{ product.priceText }}</div>
+                  <div style="font-size:12.5px;color:#8d8375;margin-top:4px">ราคานี้รวมค่าเรือนและงานฝังแล้ว</div>
+                </div>
+                <button onClick="{{ toggleWish }}" style="flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:1px solid {{ wishBorder }};background:{{ wishBg }};color:{{ wishFg }};font-size:18px;line-height:1">♥</button>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;overflow-x:auto;padding:14px 18px 0">
+              <sc-for list="{{ productAssurances }}" as="a" hint-placeholder-count="4">
+                <div style="flex:0 0 auto;border:1px solid #eae4da;background:#fff;border-radius:999px;padding:8px 13px;font-size:12px;color:#3a332c">{{ a }}</div>
+              </sc-for>
+            </div>
+
+            <div style="margin:18px 18px 0;border:1px solid #eae4da;border-radius:14px;overflow:hidden;background:#fff">
+              <sc-for list="{{ product.specs }}" as="row" hint-placeholder-count="8">
+                <div style="display:flex;justify-content:space-between;gap:16px;padding:11px 14px;border-bottom:1px solid #f2ede4;font-size:13px">
+                  <span style="color:#8d8375">{{ row.label }}</span>
+                  <span style="color:#241f1a;text-align:right">{{ row.value }}</span>
+                </div>
+              </sc-for>
+              <div style="display:flex;gap:10px;align-items:center;padding:12px 14px">
+                <div style="width:44px;height:56px;border-radius:6px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);flex:0 0 auto"></div>
+                <div style="font-size:12.5px;color:#5f584f;line-height:1.7">{{ product.certLabel }}<br><span style="color:#a8813f">ดูรูปใบรับรอง</span></div>
+              </div>
+            </div>
+
+            <div style="margin:16px 18px 0;padding:14px 16px;background:#f2ede4;border-radius:14px;font-size:12.5px;line-height:1.8;color:#5f584f">{{ product.blurb }}</div>
+
+            <div style="padding:20px 18px 0">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16px;color:#241f1a;margin-bottom:8px">คำถามที่ถามบ่อยเรื่องชิ้นนี้</div>
+              <sc-for list="{{ productFaq }}" as="q" hint-placeholder-count="3">
+                <div style="border-bottom:1px solid #eae4da">
+                  <button onClick="{{ q.toggle }}" style="width:100%;text-align:left;border:0;background:transparent;padding:13px 0;font-size:13.5px;color:#241f1a;display:flex;justify-content:space-between;gap:12px">
+                    <span>{{ q.q }}</span>
+                    <span style="color:#a8813f">{{ q.mark }}</span>
+                  </button>
+                  <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:13px;line-height:1.85;color:#5f584f;padding:0 0 14px">{{ q.a }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="padding:22px 0 0">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16px;color:#241f1a;padding:0 18px 12px">รีวิวงานแบบเดียวกัน</div>
+              <div style="display:flex;gap:10px;overflow-x:auto;padding:0 18px">
+                <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+                  <div style="flex:0 0 auto;width:230px;background:#fff;border:1px solid #eae4da;border-radius:14px;padding:12px">
+                    <div style="aspect-ratio:1/1;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:7px">
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#8d8375">รูปลูกค้าใส่ {{ r.sku }}</span>
+                    </div>
+                    <div style="font-size:12.5px;line-height:1.8;color:#5f584f;margin-top:9px">{{ r.text }}</div>
+                    <div style="font-size:11.5px;color:#8d8375;margin-top:7px">{{ r.who }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="padding:22px 18px 0">
+              <button onClick="{{ goCare }}" style="width:100%;text-align:left;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:13px 14px;font-size:13.5px;color:#241f1a;display:flex;justify-content:space-between;gap:12px">
+                <span>วิธีดูแลพลอยเม็ดนี้ · บริการล้างทองฟรี</span>
+                <span style="color:#a8813f">→</span>
+              </button>
+            </div>
+
+            <div style="padding:22px 18px 0">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16px;color:#241f1a;margin-bottom:12px">ชิ้นใกล้เคียง</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px">
+                <sc-for list="{{ related }}" as="item" hint-placeholder-count="4">
+                  <button onClick="{{ item.open }}" style="text-align:left;border:0;background:transparent;padding:0;display:flex;flex-direction:column;gap:7px">
+                    <div style="aspect-ratio:1/1;border-radius:12px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:8px">
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">รูป {{ item.sku }}</span>
+                    </div>
+                    <div>
+                      <div style="font-size:12.5px;color:#241f1a;line-height:1.5">{{ item.name }}</div>
+                      <div style="font-size:13.5px;color:#241f1a;font-weight:600">{{ item.priceText }}</div>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="height:150px"></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">บ้านนี้ทำอัญมณีกันสามรุ่น</div>
+            <div style="aspect-ratio:4/3;border-radius:14px;margin-top:16px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:10px">
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#8d8375">รูปคุณแม่ฤดีกับจันที่หน้าร้าน</span>
+            </div>
+            <sc-for list="{{ aboutParas }}" as="p" hint-placeholder-count="3">
+              <div style="font-size:13.5px;line-height:1.95;color:#5f584f;margin-top:16px">{{ p }}</div>
+            </sc-for>
+            <div style="margin-top:22px;border:1px solid #eae4da;border-radius:14px;background:#fff;overflow:hidden">
+              <sc-for list="{{ shopInfo }}" as="row" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;gap:14px;padding:11px 14px;border-bottom:1px solid #f2ede4;font-size:13px">
+                  <span style="color:#8d8375">{{ row.label }}</span>
+                  <span style="color:#241f1a;text-align:right">{{ row.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="aspect-ratio:16/9;border-radius:14px;margin-top:14px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:10px">
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#8d8375">แผนที่ร้าน / รูปหน้าร้าน</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isFaq }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;color:#241f1a">คำถามที่พบบ่อย</div>
+            <div style="margin-top:14px">
+              <sc-for list="{{ faqList }}" as="q" hint-placeholder-count="6">
+                <div style="border-bottom:1px solid #eae4da">
+                  <button onClick="{{ q.toggle }}" style="width:100%;text-align:left;border:0;background:transparent;padding:14px 0;font-size:13.5px;color:#241f1a;display:flex;justify-content:space-between;gap:12px">
+                    <span>{{ q.q }}</span>
+                    <span style="color:#a8813f">{{ q.mark }}</span>
+                  </button>
+                  <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:13px;line-height:1.9;color:#5f584f;padding:0 0 15px">{{ q.a }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ goRingSize }}" style="width:100%;margin-top:20px;text-align:left;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:14px;font-size:13.5px;color:#241f1a">วิธีวัดไซซ์นิ้วด้วยตัวเอง →</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isRingSize }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">วัดไซซ์นิ้วเองที่บ้าน</div>
+            <div style="font-size:13.5px;line-height:1.9;color:#5f584f;margin-top:10px">ร้านใช้เบอร์ไทย 40–70 ซึ่งอ้างอิงเส้นรอบวงนิ้วเป็นมิลลิเมตร วัดตอนเย็นจะแม่นกว่าตอนเช้าเพราะนิ้วขยายเต็มที่แล้ว</div>
+            <sc-for list="{{ ringSteps }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;margin-top:18px">
+                <div style="width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:#241f1a;color:#f5f1ea;font-size:12.5px;display:flex;align-items:center;justify-content:center">{{ s.n }}</div>
+                <div>
+                  <div style="font-size:14px;color:#241f1a">{{ s.title }}</div>
+                  <div style="font-size:13px;line-height:1.85;color:#5f584f;margin-top:4px">{{ s.body }}</div>
+                  <div style="aspect-ratio:16/9;border-radius:12px;margin-top:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:8px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">{{ s.shot }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="margin-top:24px;padding:16px;border-radius:14px;background:#f2ede4">
+              <div style="font-size:14px;color:#241f1a">เคยวัดที่ร้านแล้ว</div>
+              <div style="font-size:13px;line-height:1.8;color:#5f584f;margin-top:6px">ไซซ์ที่วัดไว้ทุกครั้งเก็บอยู่ในบัญชีลูกค้า เปิดดูได้ผ่านไลน์ของร้าน</div>
+              <button onClick="{{ openPortal }}" style="margin-top:12px;border:1px solid #ddd4c5;background:#fff;border-radius:999px;padding:10px 16px;font-size:13px;color:#3a332c">เปิดประวัติไซซ์นิ้วของฉัน</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px 16px 150px;background:#f4f2ee">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;color:#241f1a">เพิ่มสินค้าใหม่</div>
+              <div style="font-size:11.5px;color:#8d8375">admin · หน้าร้าน</div>
+            </div>
+
+            <div style="margin-top:14px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">รูปสินค้า <span style="color:#b4402f">ต้องมีอย่างน้อย 1 รูป</span></div>
+              <div style="display:flex;gap:8px;margin-top:10px;overflow-x:auto">
+                <sc-for list="{{ adminPhotos }}" as="p" hint-placeholder-count="3">
+                  <div style="position:relative;flex:0 0 auto;width:78px;height:78px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:5px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:8.5px;color:#8d8375">{{ p.label }}</span>
+                    <sc-if value="{{ p.isMain }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:5px;left:5px;background:#241f1a;color:#f5f1ea;font-size:9px;border-radius:5px;padding:2px 5px">รูปหลัก</span>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <button onClick="{{ addPhoto }}" style="flex:0 0 auto;width:78px;height:78px;border-radius:10px;border:1px dashed #cfc5b4;background:#faf8f4;color:#6d655b;font-size:12px;line-height:1.4">ถ่ายรูป<br>หรือเลือก</button>
+              </div>
+              <div style="font-size:11.5px;color:#8d8375;margin-top:8px;line-height:1.6">ย่อและครอปให้อัตโนมัติก่อนอัปโหลด ลากสลับลำดับได้ รูปแรกคือรูปที่ขึ้นในกริด</div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">ประเภท</div>
+              <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:10px">
+                <sc-for list="{{ adminTypes }}" as="c" hint-placeholder-count="5">
+                  <button onClick="{{ c.pick }}" style="border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:9px;padding:10px 14px;font-size:13px;min-height:44px">{{ c.label }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #f2ede4">
+                <div>
+                  <div style="font-size:13px;color:#241f1a">รหัสสินค้า</div>
+                  <div style="font-size:11.5px;color:#8d8375;margin-top:2px">ระบบสร้างให้ แก้ทับได้</div>
+                </div>
+                <input value="{{ adminSku }}" onInput="{{ onSku }}" style="width:120px;height:44px;border-radius:10px;border:1px solid #e6e0d6;padding:0 12px;font-family:ui-monospace,Menlo,monospace;font-size:14px;color:#241f1a;text-align:right;outline:none">
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">ราคา <span style="color:#b4402f">ต้องกรอก</span></div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+                <input value="{{ adminPrice }}" onInput="{{ onPrice }}" inputmode="numeric" placeholder="0" style="flex:1;height:52px;border-radius:11px;border:1px solid #e6e0d6;padding:0 14px;font-size:22px;font-weight:600;color:#241f1a;outline:none">
+                <span style="font-size:14px;color:#8d8375">บาท</span>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div style="font-size:13px;color:#241f1a">สเปกพลอยและทอง</div>
+                <div style="font-size:11.5px;color:#8d8375">กรอกทีหลังได้</div>
+              </div>
+              <sc-for list="{{ adminSpecFields }}" as="f" hint-placeholder-count="4">
+                <div style="margin-top:14px">
+                  <div style="font-size:12.5px;color:#6d655b">{{ f.label }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px">
+                    <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.pick }}" style="border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};border-radius:9px;padding:9px 13px;font-size:12.5px;min-height:44px">{{ o.label }}</button>
+                    </sc-for>
+                    <button onClick="{{ f.addNew }}" style="border:1px dashed #cfc5b4;background:transparent;color:#6d655b;border-radius:9px;padding:9px 13px;font-size:12.5px;min-height:44px">เพิ่มค่าใหม่</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">คำบรรยาย</div>
+              <textarea onInput="{{ onDesc }}" rows="3" placeholder="เขียนสั้น ๆ ว่าเม็ดนี้พิเศษยังไง" style="width:100%;margin-top:10px;border-radius:11px;border:1px solid #e6e0d6;padding:11px 13px;font-size:13px;line-height:1.7;color:#241f1a;outline:none;resize:none"></textarea>
+            </div>
+
+            <div style="margin-top:12px;font-size:12px;color:#8d8375;line-height:1.7;padding:0 4px">บันทึกเป็นฉบับร่างได้ ยังไม่ขึ้นเว็บจนกว่าจะกดเผยแพร่ · หน้าสินค้าฝั่ง admin ทุกชิ้นมีปุ่ม "ทำซ้ำจากชิ้นนี้"</div>
+
+            <sc-if value="{{ adminPublished }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:14px;border-radius:14px;padding:14px;background:#e9f3ea;border:1px solid #cfe3d2">
+                <div style="font-size:13.5px;color:#1f4227">ขึ้นเว็บแล้ว {{ adminSku }}</div>
+                <button onClick="{{ viewPublished }}" style="margin-top:10px;border:1px solid #b9d6be;background:#fff;border-radius:999px;padding:9px 14px;font-size:12.5px;color:#1f4227">เปิดดูหน้าจริง</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSold }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 0 130px">
+            <div style="padding:0 18px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">ผลงานที่ทำมา</div>
+              <div style="font-size:13.5px;line-height:1.9;color:#5f584f;margin-top:10px">งานที่ขายไปแล้วสองร้อยกว่าชิ้น เก็บไว้ให้ดูเป็นตัวอย่าง ชอบแบบไหนบอกได้ ทำซ้ำได้ทุกชิ้นแต่พลอยจะไม่เหมือนเม็ดเดิมเพราะพลอยแท้ไม่มีเม็ดซ้ำกัน</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;padding:18px 18px 0">
+              <sc-for list="{{ soldItems }}" as="item" hint-placeholder-count="6">
+                <button onClick="{{ item.reorder }}" style="text-align:left;border:0;background:transparent;padding:0;display:flex;flex-direction:column;gap:7px">
+                  <div style="aspect-ratio:1/1;border-radius:12px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:8px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">รูป {{ item.sku }}</span>
+                  </div>
+                  <div>
+                    <div style="font-size:13px;color:#241f1a;line-height:1.5">{{ item.name }}</div>
+                    <div style="font-size:11.5px;color:#8d8375;margin-top:2px">{{ item.metaShort }}</div>
+                    <div style="font-size:12.5px;color:#a8813f;margin-top:4px">สั่งทำแบบนี้</div>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 140px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">งานสั่งทำ</div>
+            <div style="font-size:13.5px;line-height:1.9;color:#5f584f;margin-top:10px">งานสั่งทำคืองานหลักของร้าน ส่งภาพอ้างอิงมาหรือบอกไอเดียในใจได้เลย จันคุยกับช่างให้ ราคาขึ้นกับแบบ พลอย และน้ำหนักทอง — ทักถามได้ก่อนตัดสินใจ</div>
+            <sc-for list="{{ customSteps }}" as="s" hint-placeholder-count="5">
+              <div style="display:flex;gap:12px;margin-top:18px">
+                <div style="width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:#241f1a;color:#f5f1ea;font-size:12.5px;display:flex;align-items:center;justify-content:center">{{ s.n }}</div>
+                <div>
+                  <div style="font-size:14px;color:#241f1a">{{ s.title }}</div>
+                  <div style="font-size:12px;color:#a8813f;margin-top:3px">{{ s.when }}</div>
+                  <div style="font-size:13px;line-height:1.85;color:#5f584f;margin-top:5px">{{ s.body }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="font-family:'Noto Serif Thai',serif;font-size:17px;color:#241f1a;margin-top:28px">งานสั่งทำที่ผ่านมา</div>
+            <sc-for list="{{ customCases }}" as="c" hint-placeholder-count="2">
+              <div style="margin-top:12px;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:12px">
+                <div style="display:flex;gap:9px">
+                  <div style="flex:1;aspect-ratio:1/1;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:6px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#8d8375">ก่อน</span>
+                  </div>
+                  <div style="flex:1;aspect-ratio:1/1;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:6px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#8d8375">หลัง</span>
+                  </div>
+                </div>
+                <div style="font-size:13px;line-height:1.8;color:#5f584f;margin-top:10px">{{ c.text }}</div>
+                <div style="font-size:11.5px;color:#8d8375;margin-top:6px">{{ c.meta }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isKnowledge }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">ความรู้เรื่องพลอย</div>
+            <div style="font-size:13.5px;line-height:1.9;color:#5f584f;margin-top:10px">เขียนจากประสบการณ์ที่ตลาดพลอยจันทบุรี ไม่ได้ลอกจากที่อื่น</div>
+            <div style="margin-top:16px">
+              <sc-for list="{{ articles }}" as="a" hint-placeholder-count="5">
+                <button onClick="{{ a.open }}" style="width:100%;text-align:left;border:0;border-bottom:1px solid #eae4da;background:transparent;padding:14px 0;display:flex;gap:12px;align-items:center">
+                  <div style="width:64px;height:64px;flex:0 0 auto;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px)"></div>
+                  <div style="flex:1">
+                    <div style="font-size:13.5px;color:#241f1a;line-height:1.55">{{ a.title }}</div>
+                    <div style="font-size:12px;color:#8d8375;margin-top:4px;line-height:1.6">{{ a.excerpt }}</div>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-size:12px;color:#8d8375">ความรู้เรื่องพลอย · อ่าน {{ article.mins }} นาที</div>
+            <h1 style="font-family:'Noto Serif Thai',serif;font-size:23px;line-height:1.5;color:#241f1a;margin:8px 0 0;font-weight:500">{{ article.title }}</h1>
+            <div style="aspect-ratio:4/3;border-radius:14px;margin-top:16px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:10px">
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#8d8375">{{ article.shot }}</span>
+            </div>
+            <sc-for list="{{ article.paras }}" as="p" hint-placeholder-count="3">
+              <div style="font-size:13.5px;line-height:1.95;color:#4c4640;margin-top:16px">{{ p }}</div>
+            </sc-for>
+            <button onClick="{{ goCatalog }}" style="width:100%;margin-top:24px;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:14px;text-align:left;font-size:13.5px;color:#241f1a">ดูพลอยที่มีอยู่ตอนนี้ →</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isReviews }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;color:#241f1a">รีวิวจากลูกค้า</div>
+            <div style="font-size:13px;color:#8d8375;margin-top:8px">ทุกรีวิวมาจากลูกค้าที่ซื้อจริง ระบุรหัสสินค้าที่ซื้อไว้ทุกอัน</div>
+            <sc-for list="{{ allReviews }}" as="r" hint-placeholder-count="4">
+              <div style="margin-top:14px;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:12px">
+                <div style="aspect-ratio:4/3;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:7px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:#8d8375">รูปลูกค้าใส่ {{ r.sku }}</span>
+                </div>
+                <div style="font-size:13px;line-height:1.85;color:#5f584f;margin-top:10px">{{ r.text }}</div>
+                <div style="display:flex;justify-content:space-between;gap:12px;margin-top:8px">
+                  <span style="font-size:11.5px;color:#8d8375">{{ r.who }}</span>
+                  <button onClick="{{ r.open }}" style="border:0;background:transparent;padding:0;font-size:11.5px;color:#a8813f;font-family:ui-monospace,Menlo,monospace">{{ r.sku }}</button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isWishlist }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 140px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;color:#241f1a">ชิ้นที่ถูกใจ</div>
+            <sc-if value="{{ wishEmpty }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:16px;padding:26px 18px;border:1px dashed #ded6c8;border-radius:14px;text-align:center;font-size:13.5px;line-height:1.85;color:#5f584f">ยังไม่มีชิ้นที่ถูกใจ<br>กดรูปหัวใจในหน้าสินค้าเพื่อเก็บไว้เทียบกัน</div>
+            </sc-if>
+            <sc-if value="{{ wishCount }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="font-size:12.5px;color:#8d8375;margin-top:8px">เก็บไว้ในเครื่องนี้ ส่งทั้งรายการเข้าไลน์ทีเดียวได้</div>
+                <sc-for list="{{ wishItems }}" as="item" hint-placeholder-count="2">
+                  <div style="display:flex;gap:11px;align-items:center;margin-top:14px;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:11px">
+                    <button onClick="{{ item.open }}" style="flex:0 0 auto;width:72px;height:72px;border:0;border-radius:10px;padding:0;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px)"></button>
+                    <button onClick="{{ item.open }}" style="flex:1;text-align:left;border:0;background:transparent;padding:0">
+                      <div style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#8d8375">{{ item.sku }}</div>
+                      <div style="font-size:13px;color:#241f1a;line-height:1.5;margin-top:2px">{{ item.name }}</div>
+                      <div style="font-size:13.5px;color:#241f1a;font-weight:600;margin-top:2px">{{ item.priceText }}</div>
+                    </button>
+                    <button onClick="{{ item.remove }}" aria-label="เอาออก" style="flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid #e6e0d6;background:#fff;color:#8d8375;font-size:15px">×</button>
+                  </div>
+                </sc-for>
+                <div style="font-size:13px;color:#5f584f;margin-top:16px">รวม {{ wishTotal }}</div>
+              </div>
+            </sc-if>
+            <button onClick="{{ goNotify }}" style="width:100%;margin-top:20px;text-align:left;border:1px solid #eae4da;background:#fff;border-radius:14px;padding:14px;font-size:13.5px;color:#241f1a">ให้แจ้งเตือนเมื่อมีของเข้าแบบที่สนใจ →</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isNotify }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 140px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">แจ้งเตือนของเข้าใหม่</div>
+            <div style="font-size:13.5px;line-height:1.9;color:#5f584f;margin-top:10px">พลอยดีเข้ามาไม่บ่อยและมักขายภายในสองสามวัน เลือกสิ่งที่สนใจไว้ เราส่งรูปให้ทางไลน์ก่อนลงเว็บ</div>
+            <div style="font-size:13px;color:#241f1a;margin-top:22px">สนใจพลอยชนิดไหน</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:10px">
+              <sc-for list="{{ notifyStones }}" as="c" hint-placeholder-count="5">
+                <button onClick="{{ c.toggle }}" style="border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:9px;padding:11px 14px;font-size:13px;min-height:44px">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:13px;color:#241f1a;margin-top:22px">ช่วงราคาที่ดูอยู่</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:10px">
+              <sc-for list="{{ notifyPrices }}" as="c" hint-placeholder-count="3">
+                <button onClick="{{ c.toggle }}" style="border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};border-radius:9px;padding:11px 14px;font-size:13px;min-height:44px">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:11.5px;color:#8d8375;line-height:1.75;margin-top:22px">ส่งเฉพาะเมื่อมีของตรงเงื่อนไข ไม่เกินเดือนละสองสามครั้ง ยกเลิกได้ในแชท</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCare }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">ดูแลเครื่องประดับ</div>
+            <sc-for list="{{ careItems }}" as="c" hint-placeholder-count="4">
+              <div style="margin-top:20px">
+                <div style="font-size:14px;color:#241f1a">{{ c.title }}</div>
+                <div style="font-size:13px;line-height:1.9;color:#5f584f;margin-top:5px">{{ c.body }}</div>
+              </div>
+            </sc-for>
+            <div style="margin-top:26px;padding:16px;border-radius:14px;background:#f2ede4">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16px;color:#241f1a">บริการที่ร้านทำให้ฟรี</div>
+              <sc-for list="{{ freeServices }}" as="f" hint-placeholder-count="4">
+                <div style="font-size:13px;line-height:1.85;color:#5f584f;margin-top:7px">{{ f }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPolicy }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 18px 130px">
+            <div style="font-family:'Noto Serif Thai',serif;font-size:24px;line-height:1.5;color:#241f1a">การจัดส่ง เปลี่ยนคืน และรับประกัน</div>
+            <sc-for list="{{ policyItems }}" as="p" hint-placeholder-count="5">
+              <div style="margin-top:22px">
+                <div style="font-size:14px;color:#241f1a">{{ p.title }}</div>
+                <div style="font-size:13px;line-height:1.9;color:#5f584f;margin-top:5px">{{ p.body }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isAdminArticle }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px 16px 150px;background:#f4f2ee">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;color:#241f1a">เขียนบทความ</div>
+              <div style="font-size:11.5px;color:#8d8375">admin · ความรู้พลอย</div>
+            </div>
+
+            <div style="margin-top:14px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">หัวข้อ</div>
+              <textarea value="{{ artTitle }}" onInput="{{ onArtTitle }}" rows="2" placeholder="เช่น ไพลินเผากับไม่เผา ต่างกันตรงไหน" style="width:100%;margin-top:10px;border-radius:11px;border:1px solid #e6e0d6;padding:11px 13px;font-family:'Noto Serif Thai',serif;font-size:16px;line-height:1.55;color:#241f1a;outline:none;resize:none"></textarea>
+              <div style="display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:11.5px;color:#8d8375">
+                <span>ลิงก์บทความ</span>
+                <span style="font-family:ui-monospace,Menlo,monospace;color:#5f584f;text-align:right">{{ artSlug }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">รูปปก <span style="color:#b4402f">ต้องมี</span></div>
+              <div style="display:flex;gap:9px;margin-top:10px;align-items:center">
+                <div style="flex:0 0 auto;width:96px;height:72px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:5px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:8.5px;color:#8d8375">รูปปก</span>
+                </div>
+                <div style="font-size:12px;color:#8d8375;line-height:1.7">ครอป 4:3 อัตโนมัติ<br>รูปนี้ขึ้นในหน้ารวมและตอนแชร์ไลน์</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div style="font-size:13px;color:#241f1a">เนื้อหา</div>
+                <div style="font-size:11.5px;color:#8d8375">อ่าน {{ artMins }} นาที · {{ artChars }} ตัวอักษร</div>
+              </div>
+              <sc-for list="{{ artBlocks }}" as="b" hint-placeholder-count="2">
+                <div style="margin-top:12px;border:1px solid #f0eae0;border-radius:12px;padding:10px;background:#fdfcfa">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:11.5px;color:#8d8375">{{ b.kindLabel }}</span>
+                    <div style="display:flex;gap:6px">
+                      <button onClick="{{ b.up }}" aria-label="เลื่อนขึ้น" style="width:44px;height:36px;border-radius:8px;border:1px solid #e6e0d6;background:#fff;color:#6d655b;font-size:13px">↑</button>
+                      <button onClick="{{ b.remove }}" aria-label="ลบ" style="width:44px;height:36px;border-radius:8px;border:1px solid #e6e0d6;background:#fff;color:#8d8375;font-size:14px">×</button>
+                    </div>
+                  </div>
+                  <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ true }}">
+                    <textarea value="{{ b.text }}" onInput="{{ b.onText }}" rows="4" placeholder="เขียนอย่างที่พูดกับลูกค้าหน้าร้าน" style="width:100%;margin-top:9px;border-radius:10px;border:1px solid #e6e0d6;padding:10px 12px;font-size:13px;line-height:1.85;color:#241f1a;outline:none;resize:none"></textarea>
+                  </sc-if>
+                  <sc-if value="{{ b.isImage }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:9px">
+                      <div style="aspect-ratio:16/9;border-radius:10px;background:repeating-linear-gradient(135deg,#ece7de 0 7px,#f5f1ea 7px 14px);display:flex;align-items:flex-end;padding:7px">
+                        <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#8d8375">รูปในเนื้อหา</span>
+                      </div>
+                      <input value="{{ b.text }}" onInput="{{ b.onText }}" placeholder="คำบรรยายใต้รูป" style="width:100%;margin-top:8px;height:44px;border-radius:10px;border:1px solid #e6e0d6;padding:0 12px;font-size:12.5px;color:#241f1a;outline:none">
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button onClick="{{ addText }}" style="flex:1;border:1px dashed #cfc5b4;background:transparent;color:#3a332c;border-radius:10px;min-height:46px;font-size:13px">+ ย่อหน้า</button>
+                <button onClick="{{ addImage }}" style="flex:1;border:1px dashed #cfc5b4;background:transparent;color:#3a332c;border-radius:10px;min-height:46px;font-size:13px">+ รูป</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">สินค้าที่เกี่ยวข้อง</div>
+              <div style="font-size:11.5px;color:#8d8375;margin-top:4px;line-height:1.6">ขึ้นเป็นการ์ดท้ายบทความ คนอ่านจบแล้วกดซื้อได้เลย</div>
+              <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:11px">
+                <sc-for list="{{ artProducts }}" as="p" hint-placeholder-count="6">
+                  <button onClick="{{ p.toggle }}" style="border:1px solid {{ p.border }};background:{{ p.bg }};color:{{ p.fg }};border-radius:9px;padding:9px 12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:44px">{{ p.sku }}</button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;background:#fff;border-radius:14px;padding:14px;border:1px solid #e6e0d6">
+              <div style="font-size:13px;color:#241f1a">ข้อความที่คนเห็นตอนค้น Google</div>
+              <textarea value="{{ artSeo }}" onInput="{{ onArtSeo }}" rows="2" placeholder="สรุปสองบรรทัดว่าบทความนี้ตอบอะไร" style="width:100%;margin-top:10px;border-radius:11px;border:1px solid #e6e0d6;padding:11px 13px;font-size:12.5px;line-height:1.7;color:#241f1a;outline:none;resize:none"></textarea>
+              <div style="font-size:11.5px;color:{{ seoColor }};margin-top:7px">{{ seoNote }}</div>
+              <div style="margin-top:12px;border-top:1px solid #f2ede4;padding-top:12px">
+                <div style="font-size:11.5px;color:#8d8375">ตัวอย่างที่ขึ้นใน Google</div>
+                <div style="margin-top:7px;padding:11px;border-radius:10px;background:#faf8f4">
+                  <div style="font-size:11px;color:#5f7d5a;font-family:ui-monospace,Menlo,monospace">ruedeejewelry.com{{ artSlug }}</div>
+                  <div style="font-size:14px;color:#2d4b8e;margin-top:4px;line-height:1.45">{{ artTitlePreview }}</div>
+                  <div style="font-size:12px;color:#5f584f;margin-top:4px;line-height:1.6">{{ artSeoPreview }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;font-size:12px;color:#8d8375;line-height:1.7;padding:0 4px">บันทึกร่างอัตโนมัติทุกครั้งที่หยุดพิมพ์ · เผยแพร่แล้วขึ้นทั้งหน้ารวมและบล็อก "ก่อนซื้อพลอย ควรรู้" ในหน้าแรก</div>
+
+            <sc-if value="{{ artPublished }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:14px;border-radius:14px;padding:14px;background:#e9f3ea;border:1px solid #cfe3d2">
+                <div style="font-size:13.5px;color:#1f4227;line-height:1.6">เผยแพร่แล้ว<br><span style="font-family:ui-monospace,Menlo,monospace;font-size:12px">{{ artSlug }}</span></div>
+                <button onClick="{{ goKnowledge }}" style="margin-top:10px;border:1px solid #b9d6be;background:#fff;border-radius:999px;padding:9px 14px;font-size:12.5px;color:#1f4227">เปิดหน้ารวมบทความ</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <sc-if value="{{ isAdminArticle }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 22px;background:#fff;border-top:1px solid #e6e0d6;display:flex;gap:9px;z-index:30">
+          <button onClick="{{ previewArticle }}" style="flex:0 0 auto;border:1px solid #d9d0c2;background:#fff;color:#3a332c;border-radius:13px;min-height:50px;padding:0 16px;font-size:13.5px">ดูตัวอย่าง</button>
+          <button onClick="{{ publishArticle }}" style="flex:1;border:0;background:#241f1a;color:#f5f1ea;border-radius:13px;min-height:50px;font-size:15px;font-weight:600">เผยแพร่บทความ</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showLineBar }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 22px;background:linear-gradient(to top,#faf8f4 62%,rgba(250,248,244,0));display:flex;gap:9px;z-index:30">
+          <button onClick="{{ lineChat }}" style="flex:1;border:0;background:#06c755;color:#fff;border-radius:13px;min-height:50px;font-size:15px;font-weight:600">{{ lineLabel }}</button>
+          <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ lineResize }}" style="flex:0 0 auto;border:1px solid #d9d0c2;background:#fff;color:#3a332c;border-radius:13px;min-height:50px;padding:0 14px;font-size:12.5px;line-height:1.35;text-align:left">อยากได้<br>ไซซ์อื่น</button>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 22px;background:#fff;border-top:1px solid #e6e0d6;display:flex;gap:9px;z-index:30">
+          <button onClick="{{ saveDraft }}" style="flex:0 0 auto;border:1px solid #d9d0c2;background:#fff;color:#3a332c;border-radius:13px;min-height:50px;padding:0 16px;font-size:13.5px">ฉบับร่าง</button>
+          <button onClick="{{ publish }}" style="flex:1;border:0;background:#241f1a;color:#f5f1ea;border-radius:13px;min-height:50px;font-size:15px;font-weight:600">เผยแพร่ขึ้นเว็บ</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:50%;bottom:92px;transform:translateX(-50%);background:#241f1a;color:#f5f1ea;border-radius:11px;padding:11px 16px;font-size:12.5px;z-index:40;animation:toastIn .18s ease-out;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.25)">{{ toast }}</div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:700,&quot;height&quot;:980}}">
+const CRAB1 = 'กระดองโล่งเห็นเนื้อทอง ฝังเพาะตาและขาด้วยทับทิมเม็ดเล็ก ไม่มีพลอยใหญ่กลาง เน้นความเรียบหรูของตัวเรือน';
+const CRAB2 = 'ฝังพลอยเม็ดใหญ่กลางกระดอง ทั้งทับทิมแดงและพลอยสตาร์ หลายโทนสีให้เลือก';
+
+const PRODUCTS = [
+  {sku:'RG60', name:'ปูกระดองทอง', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตาและขา', color:'แดง', metal:'ทอง 90', gold:'5.80 กรัม', size:'50', price:48800, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 01 · ปูกระดองทอง', epNote:CRAB1},
+  {sku:'RG126', name:'ปูกระดองทอง', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตาและขา', color:'แดง', metal:'ทอง 90', gold:'5.20 กรัม', size:'49', price:43100, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 01 · ปูกระดองทอง', epNote:CRAB1},
+  {sku:'RG125', name:'ปูกระดองทอง', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตาและขา', color:'แดง', metal:'ทอง 90', gold:'5.40 กรัม', size:'51', price:44400, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 01 · ปูกระดองทอง', epNote:CRAB1},
+  {sku:'RG81', name:'ปูกระดองทอง', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตาและขา', color:'แดง', metal:'ทอง 90', gold:'5.60 กรัม', size:'52', price:46000, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 01 · ปูกระดองทอง', epNote:CRAB1},
+  {sku:'RG56', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดใหญ่กลางกระดอง', color:'แดง', metal:'ทอง 90', gold:'6.20 กรัม', size:'56', price:54300, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG121', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดใหญ่กลางกระดอง', color:'แดง', metal:'ทอง 90', gold:'5.90 กรัม', size:'55', price:60900, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG59', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'star', stoneTh:'พลอยสตาร์', carat:'เม็ดใหญ่กลางกระดอง', color:'เทาเงิน', metal:'ทอง 90', gold:'7.50 กรัม', size:'56', price:64600, cert:'ใบตรวจแล็บ', sold:true, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG57', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดใหญ่กลางกระดอง', color:'แดง', metal:'ทอง 90', gold:'7.10 กรัม', size:'56', price:61200, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG123', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'star', stoneTh:'พลอยสตาร์', carat:'เม็ดใหญ่กลางกระดอง', color:'เทาเงิน', metal:'ทอง 90', gold:'6.50 กรัม', size:'56', price:57000, cert:'ใบตรวจแล็บ', sold:true, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG83', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดใหญ่กลางกระดอง', color:'แดง', metal:'ทอง 90', gold:'6.40 กรัม', size:'56', price:55800, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG82', name:'ปูกระดองพลอย', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดใหญ่กลางกระดอง', color:'แดง', metal:'ทอง 90', gold:'6.10 กรัม', size:'55', price:52900, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 02 · ปูกระดองพลอย', epNote:CRAB2},
+  {sku:'RG61', name:'แหวนปลา', type:'ring', typeTh:'แหวน', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตา', color:'แดง', metal:'ทอง 90', gold:'6.30 กรัม', size:'52', price:51300, cert:'ใบตรวจแล็บ', sold:false, series:'crab', ep:'ตอน 03 · แหวนปลา', epNote:'แหวนรูปปลาทองรังสรรค์ด้วยมือ ตาฝังทับทิมเล็ก'},
+  {sku:'ER18', name:'ต่างหูเพชรหยดน้ำ', type:'earring', typeTh:'ต่างหู', stone:'diamond', stoneTh:'เพชร', carat:'1.10 กะรัต รวม', color:'น้ำขาว D–F · VS', metal:'ทอง 90', gold:'2.60 กรัม', size:'—', price:52000, cert:'GIA', sold:false, series:null, ep:null, epNote:null},
+  {sku:'BR07', name:'สร้อยข้อมือทับทิม', type:'bracelet', typeTh:'สร้อยข้อมือ', stone:'ruby', stoneTh:'ทับทิม', carat:'5.40 กะรัต รวม', color:'แดงสด', metal:'ทอง 90', gold:'8.20 กรัม', size:'—', price:39000, cert:'ใบตรวจแล็บ', sold:false, series:null, ep:null, epNote:null},
+  {sku:'BC05', name:'เข็มกลัดปูทอง', type:'brooch', typeTh:'เข็มกลัด', stone:'ruby', stoneTh:'ทับทิม', carat:'เม็ดเล็กที่ตาและขา', color:'แดง', metal:'ทอง 90', gold:'6.40 กรัม', size:'—', price:58000, cert:'ใบตรวจแล็บ', sold:false, series:null, ep:null, epNote:null},
+  {sku:'PD22', name:'จี้เพชรเดี่ยว', type:'pendant', typeTh:'จี้', stone:'diamond', stoneTh:'เพชร', carat:'0.72 กะรัต', color:'น้ำขาว D · VS1 · Excellent', metal:'ทองคำขาว 18K', gold:'1.90 กรัม', size:'—', price:76000, cert:'GIA', sold:false, series:null, ep:null, epNote:null}
+];
+
+const REVIEWS = [
+  {sku:'RG60', who:'ชื่อลูกค้า', text:'[ใส่รีวิวจริงจากแชทไลน์ — ขออนุญาตลูกค้าก่อนลง]'},
+  {sku:'RG56', who:'ชื่อลูกค้า', text:'[ใส่รีวิวจริง พร้อมรูปที่ลูกค้าส่งมาให้]'},
+  {sku:'RG61', who:'ชื่อลูกค้า', text:'[ใส่รีวิวจริง เลือกอันที่เล่าเรื่องงานสั่งทำได้ดี]'},
+  {sku:'PD22', who:'ชื่อลูกค้า', text:'[ใส่รีวิวจริง เน้นเรื่องใบเซอร์หรือบริการหลังการขาย]'}
+];
+
+const ARTICLES = [
+  {slug:'burnt-sapphire', title:'ไพลินเผากับไม่เผา ต่างกันตรงไหน ราคาห่างเท่าไร', mins:6, excerpt:'ทำไมร้านเดียวกันขายไพลินสองเม็ดสีใกล้กันแต่ราคาต่างสามเท่า', shot:'ภาพ: ไพลินสองเม็ดวางเทียบกัน',
+   paras:['พลอยเกือบทั้งหมดในตลาดผ่านการเผาเพื่อให้สีสดขึ้นและใสขึ้น ซึ่งเป็นเรื่องปกติและยอมรับกันทั่วโลก ไม่ใช่ของปลอม แต่พลอยที่สวยอยู่แล้วโดยไม่ต้องเผาหาได้ยากกว่ามาก ราคาจึงต่างกันหลายเท่าที่คุณภาพสีเท่ากัน','วิธีรู้คือดูใบเซอร์ ตรงบรรทัด treatment ถ้าเขียนว่า no indication of heating คือไม่เผา ถ้าเขียน heated หรือ H คือเผา ร้านที่ไม่ยอมบอกว่าเผาหรือไม่เผา ให้ระวัง','สำหรับคนซื้อใส่เอง ไพลินเผาสีสวยคุ้มกว่ามาก เก็บงบไปลงที่ขนาดและความใสจะได้ของที่ใส่สวยกว่าในงบเท่ากัน พลอยไม่เผาเหมาะกับคนที่ซื้อเก็บเป็นสินทรัพย์']},
+  {slug:'read-cert', title:'อ่านใบเซอร์ GIA และ HRD ให้เข้าใจในสามนาที', mins:3, excerpt:'บรรทัดไหนสำคัญจริง บรรทัดไหนอ่านผ่านได้', shot:'ภาพ: ใบเซอร์ GIA ชี้จุดสำคัญ',
+   paras:['ใบเซอร์บอกสามเรื่องหลัก คือชนิดพลอย น้ำหนัก และการปรับปรุงคุณภาพ สามบรรทัดนี้คือทั้งหมดที่มีผลกับราคา ส่วนที่เหลือเป็นข้อมูลทางเทคนิค','ใบเซอร์ไม่ได้ตีราคาให้ และไม่รับประกันว่าพลอยสวย พลอยสองเม็ดที่ใบเซอร์เหมือนกันเป๊ะอาจสวยไม่เท่ากันเลย เพราะไฟและการเจียระไนวัดเป็นตัวเลขไม่ได้','เลขใบเซอร์ตรวจย้อนหลังได้ในเว็บของสถาบัน ถ้าเลขไม่ตรงกับพลอยในมือ ให้คืนของทันที']},
+  {slug:'sapphire-color', title:'สีไพลินแบบไหนราคาสูง รอยัลบลูคืออะไร', mins:5, excerpt:'ชื่อเรียกสีในวงการ กับสิ่งที่ตาเห็นจริง', shot:'ภาพ: ไล่เฉดไพลินห้าระดับ',
+   paras:['รอยัลบลูคือน้ำเงินเข้มอิ่มที่ยังเห็นไฟ ไม่ทึบดำ เป็นเฉดที่ราคาสูงที่สุดของไพลิน รองมาคือคอร์นฟลาวเวอร์ที่อ่อนกว่าและสว่างกว่า','คำที่ต้องระวังคือ น้ำเงินเข้ม ซึ่งบางร้านใช้เรียกพลอยที่เข้มจนทึบ ใส่แล้วดูดำ ราคาควรต่ำกว่ารอยัลบลูอย่างมาก','วิธีทดสอบง่ายสุดคือถ่ายรูปในร่มโดยไม่เปิดแฟลช ถ้ายังเห็นน้ำเงินสดคือพลอยมีไฟจริง ถ้าออกดำคือพลอยเข้มเกิน']},
+  {slug:'gold-90-vs-18k', title:'ทอง 90 กับทอง 18K เลือกอันไหนดี', mins:4, excerpt:'สีต่างกัน ความแข็งต่างกัน ราคาต่างกัน', shot:'ภาพ: เรือนทองสองสีเทียบกัน',
+   paras:['ทอง 90 คือทอง 21.6 กะรัตโดยประมาณ สีเหลืองอิ่มแบบไทย เนื้ออ่อนกว่า ขึ้นเรือนบางไม่ได้มาก แต่ตีเทิร์นได้ราคาดีกว่าเพราะเนื้อทองมากกว่า','ทอง 18K แข็งกว่า ทำเรือนละเอียดและก้ามฝังพลอยเม็ดใหญ่ได้มั่นคงกว่า สีอ่อนกว่าและมีทองคำขาวให้เลือก เหมาะกับงานล้อมเพชร','ถ้าซื้อใส่เป็นหลักเลือกตามงานที่ชอบ ถ้าซื้อเก็บมูลค่าเลือกทอง 90']},
+  {slug:'chanthaburi-market', title:'ไปตลาดพลอยจันทบุรีครั้งแรก ควรรู้อะไร', mins:7, excerpt:'เปิดวันไหน ต่อราคายังไง ระวังอะไร', shot:'ภาพ: บรรยากาศตลาดพลอยศุกร์-อาทิตย์',
+   paras:['ตลาดคึกคักที่สุดวันศุกร์ถึงอาทิตย์ ช่วงสายถึงบ่าย พ่อค้าจากทั่วโลกมานั่งดูพลอยกันริมถนนศรีจันท์ เดินดูฟรี ไม่มีใครบังคับซื้อ','ราคาที่บอกครั้งแรกมักต่อได้ แต่ถ้าไม่รู้ราคาตลาดจริงการต่อไม่ช่วยอะไร วิธีที่ปลอดภัยกว่าคือถามหลายแผงในของแบบเดียวกันก่อนตัดสินใจ','ของที่ไม่มีใบเซอร์ราคาถูกกว่าเสมอ ถ้าซื้อเม็ดใหญ่ให้ส่งตรวจก่อนจ่ายเต็ม ร้านที่ตรงไปตรงมาจะยินดีให้ส่งตรวจ']}
+];
+
+const TYPES = [['ring','แหวน'],['earring','ต่างหู'],['bracelet','สร้อยข้อมือ'],['brooch','เข็มกลัด'],['pendant','จี้']];
+const STONES = [['sapphire','ไพลิน'],['ruby','ทับทิม'],['emerald','มรกต'],['diamond','เพชร'],['star','พลอยสตาร์']];
+const PRICES = [['lt50','ต่ำกว่า 50,000'],['50to100','50,000–100,000'],['gt100','เกิน 100,000']];
+const LINE_PHONE = '095-949-5564';
+const SKU_PREFIX = {ring:'RG', earring:'ER', bracelet:'BR', brooch:'BC', pendant:'PD'};
+
+class Component extends DCLogic {
+  state = {
+    route: 'home', sku: null, stack: [],
+    query: '', types: [], stones: [], price: null, status: null,
+    faqOpen: {}, pFaqOpen: {}, toast: '',
+    wish: [], notifyStones: [], notifyPrices: [], articleSlug: 'burnt-sapphire',
+    artTitle: '', artSeo: '', artProducts: [], artPublished: false,
+    artBlocks: [{kind:'text', text:''}],
+    adminType: 'ring', adminSku: 'RG161', adminPrice: '', adminPicks: {}, adminPhotos: 1, adminPublished: false
+  };
+
+  go(route, sku) {
+    this.setState(s => ({route, sku: sku || null, stack: [...s.stack, {route: s.route, sku: s.sku}]}));
+    this.scrollTop();
+  }
+  back() {
+    this.setState(s => {
+      const prev = s.stack[s.stack.length - 1] || {route:'home', sku:null};
+      return {route: prev.route, sku: prev.sku, stack: s.stack.slice(0, -1)};
+    });
+    this.scrollTop();
+  }
+  scrollTop() {
+    setTimeout(() => { const el = document.getElementById('scroller'); if (el) el.scrollTop = 0; }, 0);
+  }
+  toast(msg) {
+    clearTimeout(this._t);
+    this.setState({toast: msg});
+    this._t = setTimeout(() => this.setState({toast: ''}), 2600);
+  }
+  chip(label, active, onClick) {
+    return {label, toggle: onClick,
+      bg: active ? '#241f1a' : '#ffffff',
+      fg: active ? '#f5f1ea' : '#3a332c',
+      border: active ? '#241f1a' : '#e6e0d6'};
+  }
+  baht(n) { return n.toLocaleString('en-US') + ' บาท'; }
+
+  toggleIn(key, val) {
+    this.setState(s => {
+      const arr = s[key];
+      return {[key]: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]};
+    });
+  }
+
+  filtered() {
+    const s = this.state;
+    const q = s.query.trim().toLowerCase();
+    return PRODUCTS.filter(p => {
+      if (q && !(p.sku.toLowerCase().includes(q) || p.name.includes(s.query.trim()))) return false;
+      if (s.types.length && !s.types.includes(p.type)) return false;
+      if (s.stones.length && !s.stones.includes(p.stone)) return false;
+      if (s.price === 'lt50' && p.price >= 50000) return false;
+      if (s.price === '50to100' && (p.price < 50000 || p.price > 100000)) return false;
+      if (s.price === 'gt100' && p.price <= 100000) return false;
+      if (s.status === 'available' && p.sold) return false;
+      if (s.status === 'sold' && !p.sold) return false;
+      if (s.route === 'series' && p.series !== 'crab') return false;
+      return true;
+    });
+  }
+
+  decorate(p) {
+    return Object.assign({}, p, {
+      priceText: this.baht(p.price),
+      metaShort: p.metal + ' ' + p.gold + (p.size === '—' ? '' : ' · ไซซ์ ' + p.size),
+      open: () => this.go('product', p.sku)
+    });
+  }
+
+  queryString() {
+    const s = this.state, parts = [];
+    if (s.types.length) parts.push('type=' + s.types.join(','));
+    if (s.stones.length) parts.push('stone=' + s.stones.join(','));
+    if (s.price) parts.push('price=' + s.price);
+    if (s.status) parts.push('status=' + s.status);
+    if (s.query.trim()) parts.push('q=' + s.query.trim());
+    return parts.length ? '?' + parts.join('&') : '';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const product = PRODUCTS.find(p => p.sku === s.sku) || PRODUCTS[0];
+    const results = this.filtered().map(p => this.decorate(p));
+    const isCatalog = s.route === 'catalog' || s.route === 'series';
+
+    const path = s.route === 'home' ? '/'
+      : s.route === 'catalog' ? '/jewelry' + this.queryString()
+      : s.route === 'series' ? '/series/crab'
+      : s.route === 'product' ? '/jewelry/' + product.sku.toLowerCase()
+      : s.route === 'ringsize' ? '/ring-size'
+      : s.route === 'sold' ? '/portfolio'
+      : s.route === 'custom' ? '/custom-order'
+      : s.route === 'knowledge' ? '/gemstone-guide'
+      : s.route === 'article' ? '/gemstone-guide/' + s.articleSlug
+      : s.route === 'reviews' ? '/reviews'
+      : s.route === 'wishlist' ? '/favorites'
+      : s.route === 'notify' ? '/notify-me'
+      : s.route === 'care' ? '/care'
+      : s.route === 'policy' ? '/shipping-returns'
+      : s.route === 'adminArticle' ? '  ·  admin.ruedeejewelry.com/articles/new'
+      : s.route === 'admin' ? '  ·  admin.ruedeejewelry.com/products/new'
+      : '/' + s.route;
+
+    const navDef = [['home','หน้าแรก','/'],['catalog','catalog + ฟิลเตอร์','/jewelry'],['product','สินค้าเดี่ยว','/jewelry/rg126'],['sold','ผลงานที่ทำมา','/portfolio'],['custom','งานสั่งทำ','/custom-order'],['knowledge','ความรู้พลอย','/gemstone-guide'],['article','บทความ','/guide/[slug]'],['reviews','รีวิวลูกค้า','/reviews'],['wishlist','ชิ้นที่ถูกใจ','/favorites'],['notify','แจ้งของเข้าใหม่','/notify-me'],['about','เรื่องของร้าน','/about'],['care','ดูแลเครื่องประดับ','/care'],['policy','ส่ง/คืน/รับประกัน','/shipping-returns'],['faq','คำถามที่พบบ่อย','/faq'],['ringsize','วิธีวัดไซซ์','/ring-size'],['admin','เพิ่มสินค้า (admin)','/products/new'],['adminArticle','เขียนบทความ (admin)','/articles/new']];
+
+    const stoneOf = k => (STONES.find(x => x[0] === k) || ['','']) [1];
+
+    const adminField = (label, key, options) => ({
+      label,
+      addNew: () => this.toast('เพิ่มค่าใหม่ในรายการ ' + label),
+      options: options.map(o => {
+        const active = s.adminPicks[key] === o;
+        return {label: o, bg: active ? '#241f1a' : '#faf8f4', fg: active ? '#f5f1ea' : '#3a332c', border: active ? '#241f1a' : '#e6e0d6',
+          pick: () => this.setState(st => ({adminPicks: Object.assign({}, st.adminPicks, {[key]: o})}))};
+      })
+    });
+
+    const faqData = [
+      ['เพชร / พลอย แท้ไหม มีใบรับรองหรือเปล่า','แท้ทั้งหมดค่ะ เพชรทุกเม็ดมีใบ GIA หรือ HRD ส่วนพลอยมีใบตรวจจากแล็บที่เชื่อถือได้ ที่ร้านอยู่จันทบุรี ตลาดพลอยใหญ่สุดของไทย เลยคัดเองได้ทุกตัว'],
+      ['เพชรเกรดอะไร','ที่ร้านเลือกเกรดสวยค่ะ ความสะอาด VS ขึ้นไป สี D–F (น้ำขาวสุด) เจียระไน Excellent หรือ Very Good ถ้าอยากได้ IF หรือเกรดอื่น บอกจันได้ จัดหาให้ได้ค่ะ'],
+      ['สเปคตัวเรือน — ทำจากทองเกรดอะไร','ค่าหลักของร้านคือทอง 90 ค่ะ (ทอง 90% / 21.6K) ไม่ใช่ 18K แบบที่ร้านอื่นนิยม เพราะลูกค้าไทยส่วนใหญ่ชอบสีทองเข้มชัด และอยากให้ของรักษามูลค่าได้ด้วย อยากได้ 18K, 14K, 9K หรือ white / rose gold บอกจันได้นะคะ'],
+      ['ทอง 90 คืออะไร เหมาะกับใคร','ทอง 90 = ทองคำ 90% (เทียบเท่า 21.6K) สีเหลืองเข้มแบบทองไทย ใกล้เคียงทองคำแท่งมาก ขายคืนได้ตามราคาทองตลาดในวันนั้น เหมาะกับคนที่อยากได้เครื่องประดับสวยและเก็บเป็นทรัพย์สินไปในตัว'],
+      ['แล้วทอง 18K ล่ะ ประหยัดกว่าจริงไหม ขายต่อได้ไหม','18K (ทอง 75%) ราคาเริ่มต้นถูกกว่าทอง 90 ประมาณ 15–20% เพราะใช้เนื้อทองน้อยกว่า เนื้อแข็งกว่าเลยรับเพชรเม็ดใหญ่ได้ดี ขายต่อได้แน่นอนค่ะ แต่ราคาคืนจะต่ำกว่า 90 ตามเนื้อทองที่อยู่ในนั้น'],
+      ['ทอง 90 กับ 18K สวยต่างกันมากไหม','ต่างค่ะ ทอง 90 สีเหลืองเข้มชัด อบอุ่นแบบไทย 18K สีเหลืองอ่อนละมุนกว่า และทำเป็น white / rose gold ได้ สวยทั้งคู่ ต่างกันที่มู้ดของชิ้นงาน ทักจันขอรูปเปรียบเทียบได้นะคะ'],
+      ['ใส่อาบน้ำ / ออกกำลัง / ใส่นอน ได้ไหม','ไม่แนะนำเลยค่ะ ถอดก่อนทุกครั้งดีกว่า น้ำยา เหงื่อ การกระแทก ทำให้ตัวเรือนหมอง พลอยหลวมได้ ดูแลดี ๆ ใส่ได้นานเป็นสิบปีค่ะ'],
+      ['รับสั่งทำตามดีไซน์ไหม','รับค่ะ จริง ๆ งานสั่งทำคืองานหลักของร้านเลย ส่งภาพอ้างอิงมา หรือมีไอเดียอะไรในใจบอกได้เลย จันคุยกับช่างให้ ทำได้ทุกแบบค่ะ'],
+      ['สั่งทำใช้เวลานานแค่ไหน','ปกติ 3–6 สัปดาห์ค่ะ แล้วแต่ความซับซ้อนของแบบกับพลอยที่ใช้ จันจะแจ้งวันรับของชัด ๆ หลังตกลงแบบและวางมัดจำเรียบร้อยแล้ว'],
+      ['ปรักษาก่อนซื้อ / บริการหลังการขาย ทักได้ที่ไหน','ทักจันมาได้เลยค่ะ ก่อนซื้อ — เลือกแบบ ขอภาพเพิ่ม คุยดีไซน์กัน หลังซื้อ — ถามวิธีดูแล ทำความสะอาด หรืออะไรก็ได้ ไม่ต้องเกรงใจกันนะคะ'],
+      ['ปรับขนาดแหวน / ซ่อมแซมได้ไหม','ปรับขนาดได้ค่ะ ครั้งแรกฟรีถ้าซื้อจากร้าน (ภายใน 30 วัน) ส่วนซ่อมเล็ก ๆ น้อย ๆ — ขัดเงา ชุบใหม่ เชื่อมตะขอ คิดราคามิตรภาพค่ะ ส่งกลับมาที่ร้านได้เลย'],
+      ['รับประกันยังไง','รับประกันงานช่างตลอดอายุการใช้ค่ะ ถ้าก้านหัก หลุด หรือพลอยหลุดจากที่ทำมา เคลมได้ ส่วนของหายหรือกระแทกแรง ๆ จนพังเอง อันนี้ไม่ครอบคลุมนะคะ']
+    ];
+
+    const productFaqData = [
+      ['ปรับไซซ์ได้ไหม','ปรับได้ค่ะ ครั้งแรกฟรีภายใน 30 วันหลังรับของ ชิ้นนี้ไซซ์ ' + product.size + ' ส่งกลับมาที่ร้านได้เลย'],
+      ['ทองเกรดอะไร','' + product.metal + ' น้ำหนัก ' + product.gold + ' ทอง 90 ขายคืนได้ตามราคาทองตลาดในวันนั้น อยากเปลี่ยนเป็น 18K หรือ white gold บอกจันได้'],
+      ['อยากได้แบบนี้แต่พลอยสีอื่น','สั่งทำได้ค่ะ 3–6 สัปดาห์ บอกสีที่อยากได้กับงบ จันหาพลอยให้เลือกก่อนเริ่มงาน']
+    ];
+
+    return {
+      currentPath: path,
+      navItems: navDef.map(([r, label, p]) => ({label, path: p,
+        bg: s.route === r ? '#2d2822' : 'transparent',
+        fg: s.route === r ? '#f0e9dc' : '#a49a8b',
+        go: () => this.go(r, r === 'product' ? 'RG126' : null)})),
+
+      isHome: s.route === 'home', isCatalog, isProduct: s.route === 'product',
+      isAbout: s.route === 'about', isFaq: s.route === 'faq',
+      isSold: s.route === 'sold', isCustom: s.route === 'custom',
+      isKnowledge: s.route === 'knowledge', isArticle: s.route === 'article',
+      isReviews: s.route === 'reviews', isWishlist: s.route === 'wishlist',
+      isNotify: s.route === 'notify', isCare: s.route === 'care', isPolicy: s.route === 'policy',
+      isAdminArticle: s.route === 'adminArticle',
+      isRingSize: s.route === 'ringsize', isAdmin: s.route === 'admin',
+      showBack: s.route !== 'home', showLineBar: s.route !== 'admin' && s.route !== 'adminArticle',
+      toast: s.toast,
+
+      back: () => this.back(),
+      goHome: () => this.go('home'),
+      goCatalog: () => this.go('catalog'),
+      goAbout: () => this.go('about'),
+      goRingSize: () => this.go('ringsize'),
+      goCrab: () => this.go('series'),
+      openPortal: () => this.toast('เปิด app.ruedeejewelry.com ผ่านไลน์'),
+
+      latest: PRODUCTS.slice(0, 8).map(p => this.decorate(p)),
+      categoryChips: TYPES.map(([k, label]) => ({label, go: () => { this.setState({types: [k], stones: [], price: null, status: null, query: ''}); this.go('catalog'); }})),
+      footerLinks: [['about','เรื่องของร้าน'],['sold','ผลงานที่ทำมา'],['custom','งานสั่งทำ'],['knowledge','ความรู้เรื่องพลอย'],['reviews','รีวิวจากลูกค้า'],['care','ดูแลเครื่องประดับ'],['policy','ส่ง เปลี่ยนคืน รับประกัน'],['faq','คำถามที่พบบ่อย'],['ringsize','วิธีวัดไซซ์นิ้ว'],['notify','แจ้งเตือนของเข้าใหม่']].map(([r, label]) => ({label, go: () => this.go(r)})),
+
+      catalogTitle: s.route === 'series' ? 'Crab ซีรี่ย์แหวนปู · Episode 50' : 'เครื่องประดับทั้งหมด',
+      query: s.query,
+      onQuery: e => this.setState({query: e.target.value}),
+      typeChips: TYPES.map(([k, label]) => this.chip(label, s.types.includes(k), () => this.toggleIn('types', k))),
+      stoneChips: STONES.map(([k, label]) => this.chip(label, s.stones.includes(k), () => this.toggleIn('stones', k))),
+      priceChips: PRICES.map(([k, label]) => this.chip(label, s.price === k, () => this.setState(st => ({price: st.price === k ? null : k})))),
+      statusChips: [['available','มีของ'],['sold','ขายแล้ว']].map(([k, label]) => this.chip(label, s.status === k, () => this.setState(st => ({status: st.status === k ? null : k})))),
+      results,
+      noResults: results.length === 0,
+      resultText: results.length + ' ชิ้น' + (this.queryString() ? ' · ตัวกรองอยู่ใน URL แชร์ลิงก์ได้' : ''),
+      hasFilters: !!this.queryString(),
+      clearFilters: () => this.setState({types: [], stones: [], price: null, status: null, query: ''}),
+      lineCustom: () => this.toast('เปิดไลน์พร้อมข้อความ "อยากได้งานสั่งทำค่ะ"'),
+
+      product: Object.assign({}, product, {
+        priceText: this.baht(product.price),
+        shots: ['มุมด้านข้าง', 'ใส่บนมือ', 'ก้นเรือน', 'ใบเซอร์'],
+        specs: [
+          {label:'ชนิดทอง', value: product.metal},
+          {label:'น้ำหนักทอง', value: product.gold},
+          {label:'พลอยที่ฝัง', value: product.stoneTh},
+          {label:'การฝัง', value: product.carat},
+          {label:'สี', value: product.color},
+          {label:'ไซซ์', value: product.size === '—' ? 'ไม่ระบุ' : 'เบอร์ ' + product.size},
+          {label:'ซีรี่ย์', value: product.ep || 'งานเดี่ยว ไม่อยู่ในซีรี่ย์'},
+          {label:'สถานะ', value: product.sold ? 'ขายแล้ว — สั่งทำแบบเดียวกันได้' : 'มีของ พร้อมส่ง'}
+        ],
+        certLabel: product.cert === 'GIA' ? 'ใบเซอร์ GIA แนบไปกับชิ้นงาน' : 'ใบตรวจพลอยจากแล็บที่เชื่อถือได้',
+        blurb: (product.epNote ? product.epNote + ' ' : '') + 'คุณแม่ออกแบบ ช่างมือดีของบ้านทำทุกขั้นตอน ชิ้นนี้มีชิ้นเดียว หากไซซ์ไม่พอดี ปรับให้ฟรีครั้งแรกภายใน 30 วัน'
+      }),
+      productFaq: productFaqData.map(([q, a], i) => ({q, a, open: !!s.pFaqOpen[i], mark: s.pFaqOpen[i] ? '−' : '+',
+        toggle: () => this.setState(st => ({pFaqOpen: Object.assign({}, st.pFaqOpen, {[i]: !st.pFaqOpen[i]})}))})),
+      related: PRODUCTS.filter(p => p.sku !== product.sku && (p.stone === product.stone || p.type === product.type)).slice(0, 4).map(p => this.decorate(p)),
+
+      lineLabel: s.route === 'product' ? 'ทักถามเรื่อง ' + product.sku : 'ทักแชทร้าน',
+      lineChat: () => this.toast(s.route === 'product' ? 'คัดลอกรหัส ' + product.sku + ' แล้ว วางในแชทได้เลย' : 'เปิดไลน์ร้านฤดีจิวเวลรี่'),
+      lineResize: () => this.toast('เปิดไลน์พร้อมข้อความ "สนใจ ' + product.sku + ' แต่อยากได้ไซซ์อื่นค่ะ"'),
+
+      aboutParas: [
+        'Ruedee มาจากชื่อ คุณแม่ฤดี ค่ะ บ้านนี้ทำอัญมณีกันมาตั้งแต่รุ่นปู่ย่า ส่งต่อกันมารุ่นต่อรุ่น จนถึงจัน',
+        'จันกับคุณแม่ออกแบบเอง แล้วให้ช่างมือดีของบ้านเป็นคนทำ ช่างแบบนี้เหลือน้อยมากในยุคนี้ ทุกชิ้นเลยเหมือนงานศิลป์',
+        'ร้านอยู่ที่จันทบุรี ตลาดพลอยใหญ่สุดของไทย เลยได้ของดี ของหายาก ในราคาต้นทุนจริง ส่งให้ลูกค้าตรงจากแหล่ง ไม่ผ่านพ่อค้าคนกลาง',
+        'เพชรทุกเม็ดมีใบเซอร์ GIA หรือ HRD ส่วนพลอยมีใบตรวจจากแล็บที่เชื่อถือได้ ใบเซอร์ของจริงแนบไปกับทุกชิ้น',
+        'ใส่ก็สวย เก็บก็มีค่า ส่งต่อให้ลูกหลานได้รุ่นต่อรุ่น'
+      ],
+      shopInfo: [
+        {label:'ที่อยู่', value:'ตลาดพลอย จันทบุรี'},
+        {label:'โทร', value:LINE_PHONE},
+        {label:'คุยกับ', value:'คุณจัน ตอบเองทุกข้อความ'},
+        {label:'ช่องทาง', value:'LINE · Instagram'},
+        {label:'งานหลักของร้าน', value:'งานสั่งทำตามดีไซน์'}
+      ],
+
+      faqList: faqData.map(([q, a], i) => ({q, a, open: !!s.faqOpen[i], mark: s.faqOpen[i] ? '−' : '+',
+        toggle: () => this.setState(st => ({faqOpen: Object.assign({}, st.faqOpen, {[i]: !st.faqOpen[i]})}))})),
+
+      ringSteps: [
+        {n:'1', title:'ตัดกระดาษเป็นเส้นยาว', body:'กว้างประมาณ 1 เซนติเมตร พันรอบโคนนิ้วให้แนบพอดี ไม่บีบจนแน่น', shot:'ภาพ: เส้นกระดาษพันนิ้ว'},
+        {n:'2', title:'ทำเครื่องหมายจุดที่ปลายบรรจบ', body:'ใช้ปากกาขีดตรงจุดที่กระดาษซ้อนกันพอดี แล้วคลี่ออกวัดด้วยไม้บรรทัด', shot:'ภาพ: จุดขีดบนกระดาษ'},
+        {n:'3', title:'อ่านค่าเป็นมิลลิเมตร', body:'ตัวเลขมิลลิเมตรที่ได้คือเบอร์ไทยโดยประมาณ เช่น 52 มม. คือเบอร์ 52 ถ้าอยู่กึ่งกลางให้ปัดขึ้นครึ่งเบอร์ แล้วส่งตัวเลขนี้มาในแชทได้เลย', shot:'ภาพ: ไม้บรรทัดวัดกระดาษ'}
+      ],
+
+      adminSku: s.adminSku,
+      adminPrice: s.adminPrice,
+      onSku: e => this.setState({adminSku: e.target.value}),
+      onPrice: e => this.setState({adminPrice: e.target.value.replace(/[^0-9]/g, '')}),
+      onDesc: () => {},
+      adminPhotos: Array.from({length: s.adminPhotos}, (_, i) => ({label: 'รูป ' + (i + 1), isMain: i === 0})),
+      addPhoto: () => this.setState(st => ({adminPhotos: Math.min(st.adminPhotos + 1, 6)})),
+      adminTypes: TYPES.map(([k, label]) => {
+        const active = s.adminType === k;
+        return {label, bg: active ? '#241f1a' : '#faf8f4', fg: active ? '#f5f1ea' : '#3a332c', border: active ? '#241f1a' : '#e6e0d6',
+          pick: () => this.setState({adminType: k, adminSku: SKU_PREFIX[k] + (150 + Math.floor(Math.random() * 40))})};
+      }),
+      adminSpecFields: [
+        adminField('ชนิดพลอย', 'stone', STONES.map(x => x[1])),
+        adminField('ชนิดทอง', 'metal', ['ทอง 90', 'ทอง 18K', 'ทองคำขาว', 'แพลทินัม']),
+        adminField('สีพลอย', 'color', ['น้ำเงิน', 'แดง', 'เขียว', 'ขาว', 'เทา']),
+        adminField('ไซซ์แหวน', 'size', ['50', '52', '54', '56', '58'])
+      ],
+      adminPublished: s.adminPublished,
+      saveDraft: () => { this.setState({adminPublished: false}); this.toast('บันทึกเป็นฉบับร่างแล้ว ยังไม่ขึ้นเว็บ'); },
+      publish: () => {
+        if (!s.adminPrice) { this.toast('ยังไม่ได้กรอกราคา'); return; }
+        this.setState({adminPublished: true});
+        this.toast('เผยแพร่ ' + s.adminSku + ' ขึ้นเว็บแล้ว');
+      },
+      viewPublished: () => this.go('product', 'RG126'),
+
+      artTitle: s.artTitle,
+      artTitlePreview: s.artTitle || 'หัวข้อบทความจะขึ้นที่นี่',
+      artSeo: s.artSeo,
+      artSeoPreview: s.artSeo || 'คำอธิบายสองบรรทัดจะขึ้นที่นี่',
+      onArtTitle: e => this.setState({artTitle: e.target.value}),
+      onArtSeo: e => this.setState({artSeo: e.target.value}),
+      artSlug: '/gemstone-guide/' + (s.artTitle.trim() ? s.artTitle.trim().replace(/\s+/g, '-').slice(0, 28) : 'new-article'),
+      artChars: s.artBlocks.filter(b => b.kind === 'text').reduce((t, b) => t + b.text.length, 0),
+      artMins: Math.max(1, Math.round(s.artBlocks.filter(b => b.kind === 'text').reduce((t, b) => t + b.text.length, 0) / 400)),
+      artBlocks: s.artBlocks.map((b, i) => ({
+        kindLabel: b.kind === 'text' ? 'ย่อหน้า ' + (i + 1) : 'รูปในเนื้อหา',
+        isText: b.kind === 'text', isImage: b.kind === 'image', text: b.text,
+        onText: e => { const v = e.target.value; this.setState(st => ({artBlocks: st.artBlocks.map((x, j) => j === i ? Object.assign({}, x, {text: v}) : x)})); },
+        up: () => { if (i === 0) return; this.setState(st => { const a = [...st.artBlocks]; const t = a[i - 1]; a[i - 1] = a[i]; a[i] = t; return {artBlocks: a}; }); },
+        remove: () => this.setState(st => ({artBlocks: st.artBlocks.length > 1 ? st.artBlocks.filter((_, j) => j !== i) : st.artBlocks}))
+      })),
+      addText: () => this.setState(st => ({artBlocks: [...st.artBlocks, {kind:'text', text:''}]})),
+      addImage: () => this.setState(st => ({artBlocks: [...st.artBlocks, {kind:'image', text:''}]})),
+      artProducts: PRODUCTS.slice(0, 6).map(p => {
+        const active = s.artProducts.includes(p.sku);
+        return {sku: p.sku, bg: active ? '#241f1a' : '#faf8f4', fg: active ? '#f5f1ea' : '#3a332c', border: active ? '#241f1a' : '#e6e0d6',
+          toggle: () => this.toggleIn('artProducts', p.sku)};
+      }),
+      seoNote: s.artSeo.length === 0 ? 'ถ้าเว้นว่าง Google จะตัดข้อความมาเอง ส่วนใหญ่อ่านไม่รู้เรื่อง'
+        : s.artSeo.length > 155 ? 'ยาวเกิน 155 ตัว Google จะตัดท้ายทิ้ง'
+        : 'ความยาวพอดี ' + s.artSeo.length + '/155',
+      seoColor: s.artSeo.length > 155 ? '#b4402f' : '#8d8375',
+      artPublished: s.artPublished,
+      previewArticle: () => this.toast('เปิดตัวอย่างหน้าจริงแบบยังไม่เผยแพร่'),
+      publishArticle: () => {
+        if (!s.artTitle.trim()) { this.toast('ยังไม่ได้ตั้งหัวข้อ'); return; }
+        this.setState({artPublished: true});
+        this.toast('เผยแพร่บทความแล้ว');
+      },
+
+      goWishlist: () => this.go('wishlist'),
+      goReviews: () => this.go('reviews'),
+      goCustom: () => this.go('custom'),
+      goKnowledge: () => this.go('knowledge'),
+      goCare: () => this.go('care'),
+      goNotify: () => this.go('notify'),
+      goSold: () => this.go('sold'),
+
+      wishCount: s.wish.length,
+      wishEmpty: s.wish.length === 0,
+      wishItems: s.wish.map(sku => {
+        const p = PRODUCTS.find(x => x.sku === sku);
+        return Object.assign({}, this.decorate(p), {remove: () => this.setState(st => ({wish: st.wish.filter(w => w !== sku)}))});
+      }),
+      wishTotal: this.baht(s.wish.reduce((t, sku) => t + (PRODUCTS.find(x => x.sku === sku) || {price:0}).price, 0)),
+      toggleWish: () => {
+        const has = s.wish.includes(product.sku);
+        this.setState(st => ({wish: has ? st.wish.filter(w => w !== product.sku) : [...st.wish, product.sku]}));
+        this.toast(has ? 'เอา ' + product.sku + ' ออกจากรายการที่ถูกใจ' : 'เก็บ ' + product.sku + ' ไว้ในชิ้นที่ถูกใจ');
+      },
+      wishBg: s.wish.includes(product.sku) ? '#241f1a' : '#ffffff',
+      wishFg: s.wish.includes(product.sku) ? '#e8bf76' : '#c9bda9',
+      wishBorder: s.wish.includes(product.sku) ? '#241f1a' : '#e6e0d6',
+
+      productAssurances: ['ปรับไซซ์ฟรีใน 30 วัน', 'รับประกันงานช่างตลอดอายุการใช้', 'ส่งฟรีมีประกันเต็มมูลค่า', 'ขายคืนทองตามราคาตลาด', 'ล้างทองฟรีตลอดชีพ'],
+
+      reviews: REVIEWS.slice(0, 3),
+      allReviews: REVIEWS.map(r => Object.assign({}, r, {open: () => this.go('product', r.sku)})),
+
+      soldItems: PRODUCTS.filter(p => p.sold).concat(PRODUCTS.slice(0, 4)).map(p => Object.assign({}, this.decorate(p), {
+        reorder: () => this.toast('เปิดไลน์พร้อมข้อความ "อยากสั่งทำแบบ ' + p.sku + ' ค่ะ"')
+      })),
+
+      customSteps: [
+        {n:'1', title:'บอกแบบที่ชอบและงบ', when:'ทักไลน์', body:'ส่งรูปแบบที่ถูกใจมาในไลน์ อาจเป็นชิ้นในเว็บนี้ หรือรูปจากที่อื่นก็ได้ บอกงบคร่าว ๆ ไว้ด้วยจะช่วยให้เราหาพลอยได้ตรง'},
+        {n:'2', title:'เราหาพลอยให้เลือก', when:'ขั้นเลือกพลอย', body:'ถ่ายวิดีโอพลอยจริงที่ตรงงบส่งให้ดูสองถึงสี่เม็ด เห็นไฟเห็นสีจริง เลือกเม็ดไหนค่อยตกลงราคา'},
+        {n:'3', title:'วางมัดจำครึ่งหนึ่ง', when:'ก่อนเริ่มงาน', body:'ตกลงแบบและวางมัดจำ แล้วจันจะแจ้งวันรับของชัด ๆ ให้'},
+        {n:'4', title:'ช่างขึ้นเรือนและฝังพลอย', when:'3–6 สัปดาห์', body:'ส่งรูปความคืบหน้าให้ดูตอนขึ้นเรือนเสร็จก่อนฝังพลอย ยังแก้รูปทรงได้ในขั้นนี้'},
+        {n:'5', title:'ตรวจงานและส่งของ', when:'ส่งมอบ', body:'ส่งรูปงานเสร็จพร้อมใบรับรองให้ดูก่อน ชำระส่วนที่เหลือแล้วส่งของ หรือเข้ามารับที่ร้านจันทบุรีก็ได้'}
+      ],
+      customCases: [
+        {text:'ลูกค้ามีแหวนไพลินของคุณย่าที่เรือนหักและพลอยหลุด เราถอดพลอยเม็ดเดิมมาขึ้นเรือนใหม่ให้ใส่ได้ทุกวัน', meta:'[ใส่รายละเอียดงานจริง: แบบ ระยะเวลา ราคา]'},
+        {text:'สั่งแหวนหมั้นจากรูปในพินเทอเรสต์ เปลี่ยนจากเพชรเป็นไพลินเพื่อให้อยู่ในงบ ได้เม็ดใหญ่กว่าเดิมสองเท่า', meta:'[ใส่รายละเอียดงานจริง: แบบ ระยะเวลา ราคา]'}
+      ],
+
+      articles: ARTICLES.map(a => Object.assign({}, a, {open: () => { this.setState({articleSlug: a.slug}); this.go('article'); }})),
+      articleTeasers: ARTICLES.slice(0, 3).map(a => ({title: a.title, mins: a.mins, open: () => { this.setState({articleSlug: a.slug}); this.go('article'); }})),
+      article: ARTICLES.find(a => a.slug === s.articleSlug) || ARTICLES[0],
+
+      notifyStones: STONES.map(([k, label]) => this.chip(label, s.notifyStones.includes(k), () => { this.toggleIn('notifyStones', k); this.toast('บันทึกความสนใจแล้ว'); })),
+      notifyPrices: PRICES.map(([k, label]) => this.chip(label, s.notifyPrices.includes(k), () => { this.toggleIn('notifyPrices', k); this.toast('บันทึกช่วงราคาแล้ว'); })),
+
+      careItems: [
+        {title:'ถอดก่อนน้ำโดน', body:'สบู่ ครีมกันแดด และน้ำยาล้างจานทำให้เกิดฟิล์มขุ่นเคลือบพลอย พลอยจะดูหมองแม้ยังสะอาด ถอดก่อนอาบน้ำและก่อนทาครีมจะช่วยได้มากที่สุด'},
+        {title:'ล้างเองที่บ้าน', body:'น้ำอุ่นผสมสบู่อ่อนกับแปรงสีฟันขนนุ่ม แปรงเบา ๆ ใต้ก้ามพลอยซึ่งเป็นที่สะสมคราบ แล้วซับด้วยผ้านุ่ม ห้ามใช้ยาสีฟันหรือผงขัด'},
+        {title:'พลอยที่ต้องระวังพิเศษ', body:'มรกตและโอปอลเปราะกว่าไพลินและทับทิมมาก ห้ามใช้เครื่องอัลตราโซนิกและห้ามโดนความร้อน ไข่มุกให้เช็ดด้วยผ้าชุบน้ำเปล่าเท่านั้น'},
+        {title:'เก็บแยกชิ้น', body:'เพชรขูดพลอยอื่นได้ทุกชนิด แยกถุงผ้าหรือช่องกล่องคนละช่อง อย่ากองรวมในกล่องเดียว รอยขนแมวบนทองส่วนใหญ่มาจากการเก็บรวมกัน'},
+        {title:'เช็กก้ามพลอยทุกหกเดือน', body:'เอานิ้วดันพลอยเบา ๆ ถ้ารู้สึกขยับหรือได้ยินเสียงคลิก ให้หยุดใส่แล้วส่งมาให้ช่างรัดก้ามทันที ก่อนที่พลอยจะหลุดหาย'}
+      ],
+      freeServices: ['ล้างทองและขัดเงา ตลอดอายุการใช้งาน', 'ปรับไซซ์แหวนครั้งแรก ภายใน 30 วันหลังรับของ', 'ตรวจเช็กความแน่นหนาของหนามพลอย', 'ตอบคำถามหลังการซื้อทางไลน์ คุณจันตอบเอง'],
+
+      policyItems: [
+        {title:'การจัดส่ง', body:'[รอยืนยันเงื่อนไขจริงจากร้าน: ขนส่งที่ใช้ ประกันพัสดุ ค่าส่ง และรอบส่งของ]'},
+        {title:'เปลี่ยนคืน', body:'[รอยืนยันเงื่อนไขจริงจากร้าน: คืนได้กี่วัน กรณีไหนคืนเต็มจำนวน กรณีเปลี่ยนใจคิดค่าดำเนินการเท่าไร]'},
+        {title:'ปรับขนาดและซ่อมแซม', body:'ปรับขนาดแหวนครั้งแรกฟรีภายใน 30 วันหลังรับของ หลังจากนั้นคิดราคามิตรภาพ งานซ่อมเล็ก ๆ น้อย ๆ ขัดเงา ชุบใหม่ เชื่อมตะขอ ส่งกลับมาที่ร้านได้เลย'},
+        {title:'รับประกันงานช่าง', body:'รับประกันงานช่างตลอดอายุการใช้ ก้านหัก ตัวเรือนหลุด หรือพลอยหลุดจากงานที่ทำมา เคลมได้ ส่วนของหายหรือกระแทกแรงจนเสียหายไม่รวมในประกัน'},
+        {title:'ตีเทิร์นและซื้อคืน', body:'ทอง 90 ขายคืนได้ตามราคาทองตลาดในวันนั้น ส่วนค่าพลอยคิดตามสภาพและใบรับรอง ส่งรูปมาประเมินคร่าว ๆ ในไลน์ได้ก่อน'},
+        {title:'ความเป็นส่วนตัว', body:'ข้อมูลลูกค้าใช้เพื่อติดต่อเรื่องงานเท่านั้น ไม่ส่งต่อให้ใคร ขอลบข้อมูลได้ตลอดเวลา'}
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
