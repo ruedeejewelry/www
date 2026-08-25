@@ -5,10 +5,10 @@ import { getArticles, getReviews } from "@/lib/data/articles";
 import { FOOTER_LINKS, HOME_STORY } from "@/lib/data/content";
 import { getAllSeries, getProducts } from "@/lib/data/products";
 import { SITE, TYPES } from "@/lib/site";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
 /** Rebuilt on a short cycle, and immediately when staff publish. */
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 export default async function HomePage() {
   const [products, articles, reviews, series] = await Promise.all([

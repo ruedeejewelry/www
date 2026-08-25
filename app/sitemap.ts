@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 import { getArticles } from "@/lib/data/articles";
 import { getAllSeries, getProducts } from "@/lib/data/products";
 import { SITE } from "@/lib/site";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 const STATIC_PATHS = [
   "/",

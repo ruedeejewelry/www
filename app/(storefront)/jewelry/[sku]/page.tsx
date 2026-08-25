@@ -13,9 +13,9 @@ import { getProduct, getProducts, relatedTo } from "@/lib/data/products";
 import { baht, formatGold, productAlt, productTitle } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import type { Product } from "@/types/db";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const products = await getProducts();

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FavoritesList } from "@/components/storefront/FavoritesList";
 import { getProducts } from "@/lib/data/products";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "ชิ้นที่ถูกใจ",

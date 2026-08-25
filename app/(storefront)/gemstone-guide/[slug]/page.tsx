@@ -6,9 +6,9 @@ import { Media } from "@/components/ui/Media";
 import { getArticle, getArticles } from "@/lib/data/articles";
 import { getProducts } from "@/lib/data/products";
 import { SITE } from "@/lib/site";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const articles = await getArticles();

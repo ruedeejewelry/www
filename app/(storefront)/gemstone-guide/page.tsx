@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Media } from "@/components/ui/Media";
 import { getArticles } from "@/lib/data/articles";
-import { REVALIDATE_SECONDS } from "@/lib/revalidate";
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next requires a literal here; tests/revalidate.test.ts keeps them equal.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "ความรู้เรื่องพลอย — เขียนจากตลาดพลอยจันทบุรี",

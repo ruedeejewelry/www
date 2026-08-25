@@ -22,24 +22,27 @@
 
 ## ก่อน push ทุกครั้ง
 
-บั๊กสองตัวที่ทำ production พังมาแล้ว โผล่เฉพาะตอนมี env จริง ในเครื่องไม่มี env
-โค้ดจะวิ่งเข้า seed fallback แล้วไม่เจออะไรเลย **ต้อง build ทั้งสองแบบ**
-
 ```bash
-npx tsc --noEmit
-npx eslint app components lib types tests scripts proxy.ts next.config.ts
-npx vitest run
-npx next build                                             # ไม่มี env → seed
-NEXT_PUBLIC_SUPABASE_URL="https://fake.supabase.co" \
-NEXT_PUBLIC_SUPABASE_ANON_KEY="fake" npx next build        # มี env → ต่อ DB
+npm run verify
 ```
 
-บทเรียนจากสองครั้งนั้น
+รันแล้ว **ต้องดู exit code ให้เป็น 0 จริง ๆ** ห้ามส่งผลผ่าน `| grep` หรือ `| head`
+เพื่อกรองเอาบรรทัดที่อยากเห็น เพราะ exit code ของ pipeline มาจากคำสั่งสุดท้าย
+build ที่ล้มเหลวจะดูเหมือนผ่านแล้วหลุดขึ้น production — เกิดมาแล้วหนึ่งครั้ง
 
-- ตัวแปร env ที่มีอยู่แต่ค่าว่างจะได้ `""` ไม่ใช่ `undefined` — `??` ไม่ช่วย
-  ใช้ตัวช่วยใน `lib/site.ts` เสมอ
-- หน้าสาธารณะห้ามอ่านข้อมูลผ่าน client ที่ผูกคุกกี้ เพราะ `generateStaticParams`
-  รันตอน build ที่ไม่มี request — มี test คุมไว้ใน `tests/data-layer.test.ts`
+`verify` รัน typecheck, lint, test และ **build สองรอบ** รอบหนึ่งไม่มี env อีกรอบ
+มี env เพราะโค้ดมีสองทางเดิน ถ้าไม่มี env ข้อมูลจะวิ่งเข้า seed fallback แล้ว
+โค้ดที่คุยกับฐานข้อมูลจริงจะไม่ถูกรันเลย
+
+### บั๊กที่หลุดขึ้น production มาแล้ว อย่าให้ซ้ำ
+
+1. **env ค่าว่าง** ตัวแปรที่มีอยู่แต่ไม่ได้ใส่ค่าจะได้ `""` ไม่ใช่ `undefined`
+   `??` ไม่ช่วย — ใช้ตัวช่วยใน `lib/site.ts`
+2. **คุกกี้ตอน build** หน้าสาธารณะห้ามอ่านข้อมูลผ่าน client ที่ผูก session เพราะ
+   `generateStaticParams` รันตอนที่ไม่มี request — `tests/data-layer.test.ts` คุมไว้
+3. **segment config ต้องเป็นค่าคงที่ตรง ๆ** `export const revalidate` เอาค่า import
+   จากไฟล์อื่นมาใส่ไม่ได้ Next อ่านมันตอน compile — `tests/revalidate.test.ts` คุมไว้
+   และ tsc ไม่จับให้ ต้อง build เท่านั้นถึงเจอ
 
 ## สภาพแวดล้อมจริง
 

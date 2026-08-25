@@ -11,7 +11,8 @@
     "seed:sql": "node scripts/generate-seed-sql.mjs",
     "typecheck": "tsc --noEmit",
     "brand": "node scripts/generate-brand-assets.mjs",
-    "demo:sql": "node scripts/generate-demo-catalogue.mjs"
+    "demo:sql": "node scripts/generate-demo-catalogue.mjs",
+    "verify": "bash scripts/verify.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
