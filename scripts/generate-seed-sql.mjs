@@ -45,6 +45,19 @@ for (const p of seed.products) {
 }
 lines.push("");
 
+// A storage_path beginning with "/" is a file the site serves itself, so the
+// sample photo already in public/ works with no upload.
+const PHOTO = "/test-photo.jpg";
+
+lines.push(
+  "-- Sample photo for each piece, so the grid is not a wall of placeholders.",
+  "insert into product_images (product_id, storage_path, alt_th, sort_order)",
+  `select p.id, ${q(PHOTO)}, p.name || ' ' || p.sku, 0 from products p`,
+  `where p.sku in (${seed.products.map((p) => q(p.sku)).join(", ")})`,
+  "  and not exists (select 1 from product_images pi where pi.product_id = p.id);",
+  "",
+);
+
 for (const r of seed.reviews) {
   lines.push(
     `insert into reviews (sku, customer_name, body, published) values (${q(r.sku)}, ${q(r.customer_name)}, ${q(r.body)}, true);`,
@@ -54,8 +67,8 @@ lines.push("");
 
 for (const a of seed.articles) {
   lines.push(
-    "insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (",
-    `  ${q(a.slug)}, ${q(a.title)}, ${q(a.excerpt)}, ${q(a.seo_description)}, ${q(a.cover_alt)}, 'published', now())`,
+    "insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (",
+    `  ${q(a.slug)}, ${q(a.title)}, ${q(a.excerpt)}, ${q(a.seo_description)}, ${q(PHOTO)}, ${q(a.cover_alt)}, 'published', now())`,
     "  on conflict (slug) do nothing;",
   );
   a.blocks.forEach((text, i) => {

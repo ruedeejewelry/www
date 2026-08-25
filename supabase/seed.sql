@@ -123,13 +123,19 @@ insert into products (sku, name, category, metal_type, gold_weight_g, stone_type
   null, 'published', null, now())
   on conflict (sku) do nothing;
 
-insert into reviews (sku, customer_name, body, published) values ('RG60', 'ชื่อลูกค้า', '[ใส่รีวิวจริงจากแชทไลน์ — ขออนุญาตลูกค้าก่อนลง]', true);
-insert into reviews (sku, customer_name, body, published) values ('RG56', 'ชื่อลูกค้า', '[ใส่รีวิวจริง พร้อมรูปที่ลูกค้าส่งมาให้]', true);
-insert into reviews (sku, customer_name, body, published) values ('RG61', 'ชื่อลูกค้า', '[ใส่รีวิวจริง เลือกอันที่เล่าเรื่องงานสั่งทำได้ดี]', true);
-insert into reviews (sku, customer_name, body, published) values ('PD22', 'ชื่อลูกค้า', '[ใส่รีวิวจริง เน้นเรื่องใบเซอร์หรือบริการหลังการขาย]', true);
+-- Sample photo for each piece, so the grid is not a wall of placeholders.
+insert into product_images (product_id, storage_path, alt_th, sort_order)
+select p.id, '/test-photo.jpg', p.name || ' ' || p.sku, 0 from products p
+where p.sku in ('RG60', 'RG126', 'RG125', 'RG81', 'RG56', 'RG121', 'RG59', 'RG57', 'RG123', 'RG83', 'RG82', 'RG61', 'ER18', 'BR07', 'BC05', 'PD22')
+  and not exists (select 1 from product_images pi where pi.product_id = p.id);
 
-insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (
-  'burnt-sapphire', 'ไพลินเผากับไม่เผา ต่างกันตรงไหน ราคาห่างเท่าไร', 'ทำไมร้านเดียวกันขายไพลินสองเม็ดสีใกล้กันแต่ราคาต่างสามเท่า', 'ไพลินเผากับไม่เผาต่างกันตรงไหน ราคาห่างกันเท่าไร และดูจากใบเซอร์อย่างไร อธิบายจากประสบการณ์ที่ตลาดพลอยจันทบุรี', 'ไพลินสองเม็ดวางเทียบกัน เม็ดซ้ายผ่านการเผา เม็ดขวาไม่เผา', 'published', now())
+insert into reviews (sku, customer_name, body, published) values ('RG60', 'ตัวอย่างรีวิว', 'ยังไม่ใช่รีวิวจริง — แทนที่ด้วยข้อความจากลูกค้าที่ขออนุญาตแล้ว รีวิวที่ขายของได้ดีที่สุดคือรีวิวที่เล่าว่าใส่ไปงานไหน คนทักว่าอย่างไร', true);
+insert into reviews (sku, customer_name, body, published) values ('RG56', 'ตัวอย่างรีวิว', 'ยังไม่ใช่รีวิวจริง — ควรมีรูปที่ลูกค้าใส่จริงคู่กับข้อความ รูปจากลูกค้ามีน้ำหนักกว่ารูปสตูดิโอเสมอ', true);
+insert into reviews (sku, customer_name, body, published) values ('RG61', 'ตัวอย่างรีวิว', 'ยังไม่ใช่รีวิวจริง — เลือกอันที่เล่าเรื่องงานสั่งทำ ตั้งแต่คุยแบบจนได้ของ เพราะงานสั่งทำคืองานหลักของร้าน', true);
+insert into reviews (sku, customer_name, body, published) values ('PD22', 'ตัวอย่างรีวิว', 'ยังไม่ใช่รีวิวจริง — อันที่พูดถึงใบเซอร์หรือบริการหลังการขายจะช่วยคนที่ลังเลเรื่องความน่าเชื่อถือ', true);
+
+insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (
+  'burnt-sapphire', 'ไพลินเผากับไม่เผา ต่างกันตรงไหน ราคาห่างเท่าไร', 'ทำไมร้านเดียวกันขายไพลินสองเม็ดสีใกล้กันแต่ราคาต่างสามเท่า', 'ไพลินเผากับไม่เผาต่างกันตรงไหน ราคาห่างกันเท่าไร และดูจากใบเซอร์อย่างไร อธิบายจากประสบการณ์ที่ตลาดพลอยจันทบุรี', '/test-photo.jpg', 'ไพลินสองเม็ดวางเทียบกัน เม็ดซ้ายผ่านการเผา เม็ดขวาไม่เผา', 'published', now())
   on conflict (slug) do nothing;
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 0, 'text', 'พลอยเกือบทั้งหมดในตลาดผ่านการเผาเพื่อให้สีสดขึ้นและใสขึ้น ซึ่งเป็นเรื่องปกติและยอมรับกันทั่วโลก ไม่ใช่ของปลอม แต่พลอยที่สวยอยู่แล้วโดยไม่ต้องเผาหาได้ยากกว่ามาก ราคาจึงต่างกันหลายเท่าที่คุณภาพสีเท่ากัน' from articles where slug = 'burnt-sapphire';
@@ -138,8 +144,8 @@ insert into article_blocks (article_id, sort_order, kind, text)
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 2, 'text', 'สำหรับคนซื้อใส่เอง ไพลินเผาสีสวยคุ้มกว่ามาก เก็บงบไปลงที่ขนาดและความใสจะได้ของที่ใส่สวยกว่าในงบเท่ากัน พลอยไม่เผาเหมาะกับคนที่ซื้อเก็บเป็นสินทรัพย์' from articles where slug = 'burnt-sapphire';
 
-insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (
-  'read-cert', 'อ่านใบเซอร์ GIA และ HRD ให้เข้าใจในสามนาที', 'บรรทัดไหนสำคัญจริง บรรทัดไหนอ่านผ่านได้', 'อ่านใบเซอร์ GIA และ HRD ให้เป็นในสามนาที บรรทัดไหนมีผลกับราคา บรรทัดไหนอ่านผ่านได้ และตรวจเลขใบเซอร์ย้อนหลังอย่างไร', 'ใบเซอร์ GIA ชี้จุดสำคัญสามบรรทัด', 'published', now())
+insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (
+  'read-cert', 'อ่านใบเซอร์ GIA และ HRD ให้เข้าใจในสามนาที', 'บรรทัดไหนสำคัญจริง บรรทัดไหนอ่านผ่านได้', 'อ่านใบเซอร์ GIA และ HRD ให้เป็นในสามนาที บรรทัดไหนมีผลกับราคา บรรทัดไหนอ่านผ่านได้ และตรวจเลขใบเซอร์ย้อนหลังอย่างไร', '/test-photo.jpg', 'ใบเซอร์ GIA ชี้จุดสำคัญสามบรรทัด', 'published', now())
   on conflict (slug) do nothing;
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 0, 'text', 'ใบเซอร์บอกสามเรื่องหลัก คือชนิดพลอย น้ำหนัก และการปรับปรุงคุณภาพ สามบรรทัดนี้คือทั้งหมดที่มีผลกับราคา ส่วนที่เหลือเป็นข้อมูลทางเทคนิค' from articles where slug = 'read-cert';
@@ -148,8 +154,8 @@ insert into article_blocks (article_id, sort_order, kind, text)
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 2, 'text', 'เลขใบเซอร์ตรวจย้อนหลังได้ในเว็บของสถาบัน ถ้าเลขไม่ตรงกับพลอยในมือ ให้คืนของทันที' from articles where slug = 'read-cert';
 
-insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (
-  'sapphire-color', 'สีไพลินแบบไหนราคาสูง รอยัลบลูคืออะไร', 'ชื่อเรียกสีในวงการ กับสิ่งที่ตาเห็นจริง', 'รอยัลบลู คอร์นฟลาวเวอร์ และน้ำเงินเข้ม ต่างกันอย่างไร สีไพลินแบบไหนราคาสูงและทดสอบไฟพลอยเองได้อย่างไร', 'ไล่เฉดสีไพลินห้าระดับจากอ่อนไปเข้ม', 'published', now())
+insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (
+  'sapphire-color', 'สีไพลินแบบไหนราคาสูง รอยัลบลูคืออะไร', 'ชื่อเรียกสีในวงการ กับสิ่งที่ตาเห็นจริง', 'รอยัลบลู คอร์นฟลาวเวอร์ และน้ำเงินเข้ม ต่างกันอย่างไร สีไพลินแบบไหนราคาสูงและทดสอบไฟพลอยเองได้อย่างไร', '/test-photo.jpg', 'ไล่เฉดสีไพลินห้าระดับจากอ่อนไปเข้ม', 'published', now())
   on conflict (slug) do nothing;
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 0, 'text', 'รอยัลบลูคือน้ำเงินเข้มอิ่มที่ยังเห็นไฟ ไม่ทึบดำ เป็นเฉดที่ราคาสูงที่สุดของไพลิน รองมาคือคอร์นฟลาวเวอร์ที่อ่อนกว่าและสว่างกว่า' from articles where slug = 'sapphire-color';
@@ -158,8 +164,8 @@ insert into article_blocks (article_id, sort_order, kind, text)
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 2, 'text', 'วิธีทดสอบง่ายสุดคือถ่ายรูปในร่มโดยไม่เปิดแฟลช ถ้ายังเห็นน้ำเงินสดคือพลอยมีไฟจริง ถ้าออกดำคือพลอยเข้มเกิน' from articles where slug = 'sapphire-color';
 
-insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (
-  'gold-90-vs-18k', 'ทอง 90 กับทอง 18K เลือกอันไหนดี', 'สีต่างกัน ความแข็งต่างกัน ราคาต่างกัน', 'ทอง 90 กับทอง 18K ต่างกันที่สี ความแข็ง และราคาขายคืน เลือกอย่างไรให้เหมาะกับการใส่จริงและการเก็บมูลค่า', 'เรือนทอง 90 และเรือนทอง 18K วางเทียบสีกัน', 'published', now())
+insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (
+  'gold-90-vs-18k', 'ทอง 90 กับทอง 18K เลือกอันไหนดี', 'สีต่างกัน ความแข็งต่างกัน ราคาต่างกัน', 'ทอง 90 กับทอง 18K ต่างกันที่สี ความแข็ง และราคาขายคืน เลือกอย่างไรให้เหมาะกับการใส่จริงและการเก็บมูลค่า', '/test-photo.jpg', 'เรือนทอง 90 และเรือนทอง 18K วางเทียบสีกัน', 'published', now())
   on conflict (slug) do nothing;
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 0, 'text', 'ทอง 90 คือทอง 21.6 กะรัตโดยประมาณ สีเหลืองอิ่มแบบไทย เนื้ออ่อนกว่า ขึ้นเรือนบางไม่ได้มาก แต่ตีเทิร์นได้ราคาดีกว่าเพราะเนื้อทองมากกว่า' from articles where slug = 'gold-90-vs-18k';
@@ -168,8 +174,8 @@ insert into article_blocks (article_id, sort_order, kind, text)
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 2, 'text', 'ถ้าซื้อใส่เป็นหลักเลือกตามงานที่ชอบ ถ้าซื้อเก็บมูลค่าเลือกทอง 90' from articles where slug = 'gold-90-vs-18k';
 
-insert into articles (slug, title, excerpt, seo_description, cover_alt, status, published_at) values (
-  'chanthaburi-market', 'ไปตลาดพลอยจันทบุรีครั้งแรก ควรรู้อะไร', 'เปิดวันไหน ต่อราคายังไง ระวังอะไร', 'ตลาดพลอยจันทบุรีเปิดวันไหน ต่อราคาอย่างไร และควรระวังอะไรเมื่อไปซื้อพลอยครั้งแรก', 'บรรยากาศตลาดพลอยจันทบุรีวันศุกร์ถึงอาทิตย์ ริมถนนศรีจันท์', 'published', now())
+insert into articles (slug, title, excerpt, seo_description, cover_image_path, cover_alt, status, published_at) values (
+  'chanthaburi-market', 'ไปตลาดพลอยจันทบุรีครั้งแรก ควรรู้อะไร', 'เปิดวันไหน ต่อราคายังไง ระวังอะไร', 'ตลาดพลอยจันทบุรีเปิดวันไหน ต่อราคาอย่างไร และควรระวังอะไรเมื่อไปซื้อพลอยครั้งแรก', '/test-photo.jpg', 'บรรยากาศตลาดพลอยจันทบุรีวันศุกร์ถึงอาทิตย์ ริมถนนศรีจันท์', 'published', now())
   on conflict (slug) do nothing;
 insert into article_blocks (article_id, sort_order, kind, text)
   select id, 0, 'text', 'ตลาดคึกคักที่สุดวันศุกร์ถึงอาทิตย์ ช่วงสายถึงบ่าย พ่อค้าจากทั่วโลกมานั่งดูพลอยกันริมถนนศรีจันท์ เดินดูฟรี ไม่มีใครบังคับซื้อ' from articles where slug = 'chanthaburi-market';
