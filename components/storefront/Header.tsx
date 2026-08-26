@@ -2,34 +2,38 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { useFavorites } from "@/lib/favorites";
 
+/*
+  Two things only: home, and the saved pieces.
+
+  There is no back button. It came from the prototype, which drew a phone with
+  no browser around it, so a screen had to supply its own way back. On the real
+  web the phone already has one — Android's gesture, Safari's edge swipe, and
+  the arrow in LINE's in-app browser.
+
+  Worse, it broke in the case that matters most here. router.back() walks
+  browser history, not the site's structure, and almost every visitor arrives on
+  a single link from LINE or Instagram with no history behind it. The button
+  would have done nothing at all, or thrown them out of the site. Going up a
+  level is the tab row's job, and it names where it is taking you.
+*/
 export function Header() {
-  const pathname = usePathname();
-  const router = useRouter();
   const { skus, ready } = useFavorites();
-  const isHome = pathname === "/";
 
   return (
     <header className="sticky top-0 z-20 border-b border-rule bg-paper/95 backdrop-blur-[8px]">
-      <div className="mx-auto flex h-[52px] w-full max-w-[430px] items-center gap-[10px] px-[14px] md:max-w-[768px]">
-        {!isHome ? (
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label="ย้อนกลับ"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-[16px] leading-none text-ink"
-          >
-            ←
-          </button>
-        ) : null}
+      <div className="mx-auto flex h-[52px] w-full max-w-[430px] items-center px-[18px] md:max-w-[768px]">
         {/*
           The monogram alone, not the full lockup: the header is 52px tall and
           the stacked wordmark would be unreadable at that size. Fixed
           dimensions keep the row from shifting while it loads.
         */}
-        <Link href="/" aria-label="Ruedee Jewelry หน้าแรก" className="flex items-center">
+        <Link
+          href="/"
+          aria-label="Ruedee Jewelry หน้าแรก"
+          className="flex items-center"
+        >
           <Image
             src="/ruedee-mark.webp"
             alt="Ruedee Jewelry"
@@ -40,11 +44,6 @@ export function Header() {
           />
         </Link>
         <div className="flex-1" />
-        {/*
-          No "see everything" pill here: the tab row directly below opens with
-          เครื่องประดับ, and two controls for the same destination stacked eight
-          pixels apart is clutter, not emphasis.
-        */}
         <Link
           href="/favorites"
           aria-label="ชิ้นที่ถูกใจ"
