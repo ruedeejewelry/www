@@ -232,15 +232,47 @@ export const SHOP_INFO = [
   { label: "งานหลักของร้าน", value: "งานสั่งทำตามดีไซน์" },
 ];
 
-export const FOOTER_LINKS = [
-  { href: "/about", label: "เรื่องของร้าน" },
-  { href: "/portfolio", label: "ผลงานที่ทำมา" },
-  { href: "/custom-order", label: "งานสั่งทำ" },
-  { href: "/gemstone-guide", label: "ความรู้เรื่องพลอย" },
-  { href: "/reviews", label: "รีวิวจากลูกค้า" },
-  { href: "/care", label: "ดูแลเครื่องประดับ" },
-  { href: "/shipping-returns", label: "ส่ง เปลี่ยนคืน รับประกัน" },
-  { href: "/faq", label: "คำถามที่พบบ่อย" },
-  { href: "/ring-size", label: "วิธีวัดไซซ์นิ้ว" },
-  { href: "/notify-me", label: "แจ้งเตือนของเข้าใหม่" },
+/**
+ * Footer navigation, grouped the way a customer's questions arrive: what is
+ * for sale, what they need to know before deciding, and what happens after
+ * they buy. A flat list of every page in one column is not a footer.
+ */
+export const FOOTER_GROUPS = [
+  {
+    title: "เครื่องประดับ",
+    links: [
+      { href: "/jewelry", label: "ดูทั้งหมด" },
+      { href: "/series", label: "ซีรี่ย์" },
+      { href: "/portfolio", label: "ผลงานที่ทำมา" },
+      { href: "/custom-order", label: "งานสั่งทำ" },
+    ],
+  },
+  {
+    title: "ก่อนตัดสินใจ",
+    links: [
+      { href: "/gemstone-guide", label: "ความรู้เรื่องพลอย" },
+      { href: "/reviews", label: "รีวิวจากลูกค้า" },
+      { href: "/ring-size", label: "วิธีวัดไซซ์นิ้ว" },
+      { href: "/faq", label: "คำถามที่พบบ่อย" },
+    ],
+  },
+  {
+    title: "หลังการขาย",
+    links: [
+      { href: "/care", label: "ดูแลเครื่องประดับ" },
+      { href: "/shipping-returns", label: "ส่ง เปลี่ยนคืน รับประกัน" },
+      { href: "/notify-me", label: "แจ้งเตือนของเข้าใหม่" },
+    ],
+  },
+  {
+    title: "เกี่ยวกับร้าน",
+    links: [
+      { href: "/about", label: "เรื่องของร้าน" },
+      { href: "/favorites", label: "ชิ้นที่ถูกใจ" },
+    ],
+  },
 ];
+
+/** One line under the wordmark. The shop in a breath. */
+export const FOOTER_TAGLINE =
+  "เพชรพลอยแท้และงานสั่งทำ จากตลาดพลอยจันทบุรี บ้านนี้ทำอัญมณีกันสามรุ่น";

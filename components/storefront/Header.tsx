@@ -40,12 +40,11 @@ export function Header() {
           />
         </Link>
         <div className="flex-1" />
-        <Link
-          href="/jewelry"
-          className="rounded-full border border-border bg-card px-[13px] py-[7px] text-[12.5px] text-[#3a332c]"
-        >
-          ดูสินค้าทั้งหมด
-        </Link>
+        {/*
+          No "see everything" pill here: the tab row directly below opens with
+          เครื่องประดับ, and two controls for the same destination stacked eight
+          pixels apart is clutter, not emphasis.
+        */}
         <Link
           href="/favorites"
           aria-label="ชิ้นที่ถูกใจ"
