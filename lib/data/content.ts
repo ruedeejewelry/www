@@ -8,6 +8,71 @@ import type { Product } from "@/types/db";
   forgotten, and it is easy to grep for.
 */
 
+/**
+ * The about page is written as runs of text so a phrase can be lifted into gold
+ * without burying the copy in markup — the shop's own page emphasises the words
+ * that carry the trust: คุณแม่ฤดี, ต้นทุนจริง, GIA หรือ HRD.
+ */
+export type Run = { t: string; em?: true };
+
+export const ABOUT_SECTIONS: {
+  heading: string;
+  lead: Run[];
+}[] = [
+  {
+    heading: "ตั้งชื่อตามคุณแม่",
+    lead: [
+      { t: "Ruedee มาจากชื่อ " },
+      { t: "คุณแม่ฤดี", em: true },
+      {
+        t: " ค่ะ บ้านนี้ทำอัญมณีกันมาตั้งแต่รุ่นปู่ย่า ส่งต่อกันมารุ่นต่อรุ่น จนถึงจัน",
+      },
+    ],
+  },
+  {
+    heading: "อยู่ที่จันทบุรี",
+    lead: [
+      { t: "ตลาดพลอยใหญ่สุดของไทย — เลยได้ของดี ของหายาก ในราคา " },
+      { t: "ต้นทุนจริง", em: true },
+      { t: " ส่งให้ลูกค้าตรงจากแหล่ง ไม่ผ่านพ่อค้าคนกลาง" },
+    ],
+  },
+  {
+    heading: "ร้านของเรา",
+    lead: [
+      { t: "ขาย " },
+      { t: "เพชร พลอย แท้", em: true },
+      { t: " ในราคาต้นน้ำ เพชรทุกเม็ดมีใบเซอร์ " },
+      { t: "GIA หรือ HRD", em: true },
+      { t: " ส่วนพลอยมีใบตรวจจากแล็บที่เชื่อถือได้ค่ะ" },
+    ],
+  },
+];
+
+/** Sits beside the workbench photo, in the shop's own words. */
+export const ABOUT_QUOTE = {
+  lines: ["ใส่ก็สวย", "เก็บก็มีค่า"],
+  note: ["ส่งต่อให้ลูกหลาน", "ได้รุ่นต่อรุ่น"],
+};
+
+export const ABOUT_PILLARS = [
+  {
+    src: "/small-1.jpg",
+    alt: "ตู้โชว์แหวนและสร้อยพลอยหลากสีที่หน้าร้าน",
+    caption: ["คอลเล็คชั่นพร้อมส่ง", "คุณแม่ออกแบบเอง", "มีชิ้นเดียวในโลก"],
+  },
+  {
+    src: "/small-2.jpg",
+    alt: "คุณจันคุยกับลูกค้าที่เคาน์เตอร์ในร้าน",
+    caption: ["งานสั่งทำ", "คุยตรงกับ", "คุณจันได้เลย"],
+  },
+  {
+    src: "/small-3.jpg",
+    alt: "กำไลพลอยเม็ดใหญ่ล้อมเพชรบนมือ",
+    caption: ["เพชรทุกเม็ด", "มีใบเซอร์", "GIA หรือ HRD"],
+  },
+];
+
 export const ABOUT_PARAGRAPHS = [
   "Ruedee มาจากชื่อ คุณแม่ฤดี ค่ะ บ้านนี้ทำอัญมณีกันมาตั้งแต่รุ่นปู่ย่า ส่งต่อกันมารุ่นต่อรุ่น จนถึงจัน",
   "จันกับคุณแม่ออกแบบเอง แล้วให้ช่างมือดีของบ้านเป็นคนทำ ช่างแบบนี้เหลือน้อยมากในยุคนี้ ทุกชิ้นเลยเหมือนงานศิลป์",
